@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace WaveAnalyzer
 {
-    
-    public struct wavFilehdr
+    //For reading??
+    /*public struct wavFilehdr
     {
         public int RIFF;
         public int filesize_minus_4;
@@ -23,28 +23,51 @@ namespace WaveAnalyzer
         public short bits_per_sample;
         public int data;
         public int data_size;
-
-        public wavFilehdr(int RIFF, int filesize_minus_4, int WAVE, int fmt_, int fmt_size,
-            short format_tag, short nchannels, int samples_per_sec, int avg_bytes_per_sec,
-            short nblock_align, short bits_per_sample, int data, int data_size)
-        {
-            this.RIFF = RIFF;
-            this.filesize_minus_4 = filesize_minus_4;
-            this.WAVE = WAVE;
-            this.fmt_ = fmt_;
-            this.fmt_size = fmt_size;
-            this.format_tag = format_tag;
-            this.nchannels = nchannels;
-            this.samples_per_sec = samples_per_sec;
-            this.avg_bytes_per_sec = avg_bytes_per_sec;
-            this.nblock_align = nblock_align;
-            this.bits_per_sample = bits_per_sample;
-            this.data = data;
-            this.data_size = data_size;
-        }
-    };
-    public static class WavReader
+    };*/
+    public class WavReader
     {
+        //RIFF
+        public int ChunkID;
+        public int ChunkSize;
+        public int Format;
+        public int SubChunk1ID;
+        public int SubChunk1Size;
+        public short AudioFormat;
+        public short NumChannels;
+        public int SampleRate;
+        public int ByteRate;
+        public short BlockAlign;
+        public short BitsPerSample;
+        public int SubChunk2ID;
+        public int SubChunk2Size;
+        public double[] Data;
+
+        public WavReader(int ChunkID, int ChunkSize, int Format, int SubChunk1ID,
+            int SubChunk1Size, short AudioFormat, short NumChannels, int SampleRate,
+            int ByteRate, short BlockAlign, short BitsPerSample, int SubChunk2ID,
+            int SubChunk2Size, double[] Data)
+        {
+            this.ChunkID = ChunkID;
+            this.ChunkSize = ChunkSize;
+            this.Format = Format;
+            this.SubChunk1ID = SubChunk1ID;
+            this.SubChunk1Size = SubChunk1Size;
+            this.AudioFormat = AudioFormat;
+            this.NumChannels = NumChannels;
+            this.SampleRate = SampleRate;
+            this.ByteRate = ByteRate;
+            this.BlockAlign = BlockAlign;
+            this.BitsPerSample = BitsPerSample;
+            this.SubChunk2ID = SubChunk2ID;
+            this.SubChunk2Size = SubChunk2Size;
+            this.Data = Data;
+        }
+
+        public double[] getData()
+        {
+            return Data;
+        }
+        /*//For writing??
         public static void WriteWav()
         {
             uint sampleNums = 44100;
@@ -65,6 +88,7 @@ namespace WaveAnalyzer
             bw.Write((ushort)(8 * sampleLength));
             bw.Write(System.Text.Encoding.ASCII.GetBytes("data"));
 
-        }
+        }*/
+
     }
 }

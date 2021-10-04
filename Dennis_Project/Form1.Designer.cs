@@ -29,11 +29,8 @@ namespace WaveAnalyzer
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.btnGen = new System.Windows.Forms.Button();
-            this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.SuspendLayout();
             // 
             // btnGen
@@ -42,34 +39,23 @@ namespace WaveAnalyzer
             this.btnGen.Name = "btnGen";
             this.btnGen.Size = new System.Drawing.Size(75, 23);
             this.btnGen.TabIndex = 0;
-            this.btnGen.Text = "Hi :3";
+            this.btnGen.Text = "Generate";
             this.btnGen.UseVisualStyleBackColor = true;
-            this.btnGen.Click += new System.EventHandler(this.btnGen_Click);
             // 
-            // chart1
+            // openFileDialog1
             // 
-            legend1.Name = "Legend1";
-            this.chart1.Legends.Add(legend1);
-            this.chart1.Location = new System.Drawing.Point(28, 35);
-            this.chart1.Name = "chart1";
-            series1.Legend = "Legend1";
-            series1.Name = "Series1";
-            this.chart1.Series.Add(series1);
-            this.chart1.Size = new System.Drawing.Size(748, 300);
-            this.chart1.TabIndex = 1;
-            this.chart1.Text = "chart1";
-            this.chart1.Click += new System.EventHandler(this.chart1_Click);
+            this.openFileDialog1.FileName = "openFileDialog1";
+            this.openFileDialog1.Title = "\"Hello\"";
+            this.openFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog1_FileOk);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1121, 554);
-            this.Controls.Add(this.chart1);
+            this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.btnGen);
             this.Name = "Form1";
             this.Text = "Form1";
-            ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -77,7 +63,7 @@ namespace WaveAnalyzer
         #endregion
 
         private System.Windows.Forms.Button btnGen;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
     }
 }
 

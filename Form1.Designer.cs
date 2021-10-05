@@ -29,8 +29,8 @@ namespace WaveAnalyzer
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.btnGen = new System.Windows.Forms.Button();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
@@ -38,9 +38,10 @@ namespace WaveAnalyzer
             // 
             // btnGen
             // 
-            this.btnGen.Location = new System.Drawing.Point(590, 382);
+            this.btnGen.Location = new System.Drawing.Point(902, 543);
+            this.btnGen.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnGen.Name = "btnGen";
-            this.btnGen.Size = new System.Drawing.Size(75, 23);
+            this.btnGen.Size = new System.Drawing.Size(112, 35);
             this.btnGen.TabIndex = 0;
             this.btnGen.Text = "Hi :3";
             this.btnGen.UseVisualStyleBackColor = true;
@@ -48,25 +49,27 @@ namespace WaveAnalyzer
             // 
             // chart1
             // 
-            legend1.Name = "Legend1";
-            this.chart1.Legends.Add(legend1);
-            this.chart1.Location = new System.Drawing.Point(28, 35);
+            legend2.Name = "Legend1";
+            this.chart1.Legends.Add(legend2);
+            this.chart1.Location = new System.Drawing.Point(42, 54);
+            this.chart1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.chart1.Name = "chart1";
-            series1.Legend = "Legend1";
-            series1.Name = "Series1";
-            this.chart1.Series.Add(series1);
-            this.chart1.Size = new System.Drawing.Size(748, 300);
+            series2.Legend = "Legend1";
+            series2.Name = "Series1";
+            this.chart1.Series.Add(series2);
+            this.chart1.Size = new System.Drawing.Size(1122, 462);
             this.chart1.TabIndex = 1;
             this.chart1.Text = "chart1";
             this.chart1.Click += new System.EventHandler(this.chart1_Click);
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1121, 554);
+            this.ClientSize = new System.Drawing.Size(1345, 619);
             this.Controls.Add(this.chart1);
             this.Controls.Add(this.btnGen);
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "Form1";
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();

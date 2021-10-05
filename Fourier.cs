@@ -71,6 +71,43 @@ namespace WaveAnalyzer
             }
             return S;
         }
+        //Filter frequencies out
+        public static double[] filter(double[] freq, double cutoff)
+        {
+            double[] filter = new double[freq.Length];
+            for (int i = 0; i < freq.Length; i++)
+            {
+                if (freq[i] > cutoff)
+                {
+                    freq[i] *= 0;
+                    filter[i] = 0;
+                } else
+                {
+                    freq[i] *= 1;
+                    filter[i] = 1;
+                }
+            }
+            return filter;
+        }
+        //Convolution
+        public static double[] convolve(double[] s, double[] fw)
+        {
+            double[] samples = new double[s.Length];
+            int m = s.Length;
+            int n = fw.Length;
+            for (int i = 0; i < m; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    if ((j + i) <= m)
+                    {
+                        samples[i] += s[j + i] * fw[j];
+                        Array.Resize(ref s, m + (n - 1));
+                    }
+                }
+            }
+            return samples;
+        }
         //Printing Samples
         public static void printSamples(double[] S)
         {

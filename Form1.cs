@@ -21,6 +21,7 @@ namespace WaveAnalyzer
 
         private void btnGen_Click(object sender, EventArgs e)
         {
+            //Basically the menu where you select files
             OpenFileDialog openFileDialog = new OpenFileDialog();
             //add filter
             openFileDialog.Filter = "WAV File (*.wav)|*.wav|All files (*.*)|*.*";
@@ -29,7 +30,7 @@ namespace WaveAnalyzer
             {
                 return;
             }
-            //read wave file in bytes (bitconverter.toint
+            //read wave file in bytes
             byte[] buffer = File.ReadAllBytes(openFileDialog.FileName);
             
             //Grabbing Data portion of header
@@ -64,6 +65,11 @@ namespace WaveAnalyzer
                 );
 
             //x is buckets, y is ampl
+            Complex[] dftd = Fourier.DFT(theData, theData.Length);
+            for (int i = 0; i < dftd.Length; i++)
+            {
+                Console.WriteLine(dftd[i].real + ", " + dftd[i].imaginary);
+            }
         }
 
         private void chart1_Click(object sender, EventArgs e)

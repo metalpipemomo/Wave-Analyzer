@@ -21,10 +21,10 @@ namespace WaveAnalyzer
             double[] s = { 1, 3, 2, 6, 8, 4, 2, 3, 1, 1, 3, 5};
             double[] fw = { 1.1, 2.1, 0.3, 0.2 };
             double[] samples = Fourier.convolve(s, fw);
-            for (int i = 0; i < s.Length; i++)
+            /*for (int i = 0; i < s.Length; i++)
             {
                 Console.WriteLine(samples[i]);
-            }
+            }*/
         }
     }
 }

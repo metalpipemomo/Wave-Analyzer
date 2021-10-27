@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace WaveAnalyzer
 {
@@ -72,24 +73,50 @@ namespace WaveAnalyzer
             return S;
         }
         //Filter frequencies out
-        public static double[] filter(double[] freq, double cutoff)
+        
+        //low-pass filter
+        public static double[] lowPassFilter(int N, double fcut, double samplerate)
         {
-            double[] filter = new double[freq.Length];
-            for (int i = 0; i < freq.Length; i++)
+            double[] lowpass = new double[N];
+            lowpass[0] = 1;
+            int bin = (int) Math.Floor((fcut * N) / samplerate);
+            for (int i = 1; i < bin + 1; i++)
             {
-                if (freq[i] > cutoff)
-                {
-                    freq[i] *= 0;
-                    filter[i] = 0;
-                } else
-                {
-                    freq[i] *= 1;
-                    filter[i] = 1;
-                }
+                lowpass[i] = 1;
             }
-            return filter;
+            for (int i = bin + 1; i < N - bin; i++)
+            {
+                lowpass[i] = 0;
+            }
+            for (int i = N - bin; i < N; i++)
+            {
+                lowpass[i] = 1;
+            }
+            return lowpass;
         }
-        //Convolution
+
+        //high-pass filter
+        public static double[] highPassFilter(int N, double fcut, double samplerate)
+        {
+            double[] highpass = new double[N];
+            highpass[0] = 1;
+            int bin = (int) Math.Ceiling((fcut * N) / samplerate);
+            for (int i = 1; i < bin + 1; i++)
+            {
+                highpass[i] = 0;
+            }
+            for (int i = bin + 1; i < N - bin; i++)
+            {
+                highpass[i] = 1;
+            }
+            for (int i = N - bin; i < N; i++)
+            {
+                highpass[i] = 0;
+            }
+            return highpass;
+        }
+
+        //convolution
         public static double[] convolve(double[] s, double[] fw)
         {
             double[] samples = new double[s.Length];
@@ -115,6 +142,16 @@ namespace WaveAnalyzer
             {
                 Console.WriteLine(i + ". " + Math.Round(S[i], 5));
             }
+        }
+        public static void printSamplesTrace(double[] S)
+        {
+            string s = "[ ";
+            for (int i = 0; i < S.Length; i++)
+            {
+                s += S[i] + " ";
+            }
+            s += "]";
+            Trace.WriteLine(s);
         }
         //Printing Complex Numbers
         public static void printComplex(Complex[] A)

@@ -29,9 +29,9 @@ namespace WaveAnalyzer
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.File = new System.Windows.Forms.Button();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.Clear = new System.Windows.Forms.Button();
@@ -45,9 +45,10 @@ namespace WaveAnalyzer
             // 
             // File
             // 
-            this.File.Location = new System.Drawing.Point(12, 39);
+            this.File.Location = new System.Drawing.Point(18, 60);
+            this.File.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.File.Name = "File";
-            this.File.Size = new System.Drawing.Size(75, 23);
+            this.File.Size = new System.Drawing.Size(112, 35);
             this.File.TabIndex = 0;
             this.File.Text = "File";
             this.File.UseVisualStyleBackColor = true;
@@ -58,29 +59,31 @@ namespace WaveAnalyzer
             this.chart1.BackColor = System.Drawing.Color.SlateGray;
             this.chart1.BorderlineColor = System.Drawing.Color.SlateGray;
             this.chart1.BorderlineWidth = 2;
-            chartArea1.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea1);
-            legend1.Name = "Legend1";
-            this.chart1.Legends.Add(legend1);
-            this.chart1.Location = new System.Drawing.Point(12, 68);
+            chartArea3.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea3);
+            legend3.Name = "Legend1";
+            this.chart1.Legends.Add(legend3);
+            this.chart1.Location = new System.Drawing.Point(18, 105);
+            this.chart1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.chart1.Name = "chart1";
             this.chart1.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
-            series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series1.IsVisibleInLegend = false;
-            series1.Legend = "Legend1";
-            series1.Name = "Original";
-            series1.YValuesPerPoint = 10;
-            this.chart1.Series.Add(series1);
-            this.chart1.Size = new System.Drawing.Size(894, 179);
+            series3.ChartArea = "ChartArea1";
+            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series3.IsVisibleInLegend = false;
+            series3.Legend = "Legend1";
+            series3.Name = "Original";
+            series3.YValuesPerPoint = 10;
+            this.chart1.Series.Add(series3);
+            this.chart1.Size = new System.Drawing.Size(1341, 275);
             this.chart1.TabIndex = 1;
             this.chart1.Click += new System.EventHandler(this.chart1_Click);
             // 
             // Clear
             // 
-            this.Clear.Location = new System.Drawing.Point(831, 39);
+            this.Clear.Location = new System.Drawing.Point(262, 60);
+            this.Clear.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Clear.Name = "Clear";
-            this.Clear.Size = new System.Drawing.Size(75, 23);
+            this.Clear.Size = new System.Drawing.Size(112, 35);
             this.Clear.TabIndex = 2;
             this.Clear.Text = "Clear";
             this.Clear.UseVisualStyleBackColor = true;
@@ -88,9 +91,10 @@ namespace WaveAnalyzer
             // 
             // Save
             // 
-            this.Save.Location = new System.Drawing.Point(93, 39);
+            this.Save.Location = new System.Drawing.Point(140, 60);
+            this.Save.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Save.Name = "Save";
-            this.Save.Size = new System.Drawing.Size(75, 23);
+            this.Save.Size = new System.Drawing.Size(112, 35);
             this.Save.TabIndex = 3;
             this.Save.Text = "Save";
             this.Save.UseVisualStyleBackColor = true;
@@ -98,10 +102,9 @@ namespace WaveAnalyzer
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(199, 316);
-            this.button1.Margin = new System.Windows.Forms.Padding(2);
+            this.button1.Location = new System.Drawing.Point(1252, 392);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(516, 118);
+            this.button1.Size = new System.Drawing.Size(107, 32);
             this.button1.TabIndex = 5;
             this.button1.Text = "DIE";
             this.button1.UseVisualStyleBackColor = true;
@@ -109,9 +112,10 @@ namespace WaveAnalyzer
             // 
             // Copy
             // 
-            this.Copy.Location = new System.Drawing.Point(93, 253);
+            this.Copy.Location = new System.Drawing.Point(140, 389);
+            this.Copy.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Copy.Name = "Copy";
-            this.Copy.Size = new System.Drawing.Size(75, 23);
+            this.Copy.Size = new System.Drawing.Size(112, 35);
             this.Copy.TabIndex = 7;
             this.Copy.Text = "Copy";
             this.Copy.UseVisualStyleBackColor = true;
@@ -119,9 +123,10 @@ namespace WaveAnalyzer
             // 
             // Cut
             // 
-            this.Cut.Location = new System.Drawing.Point(12, 253);
+            this.Cut.Location = new System.Drawing.Point(18, 389);
+            this.Cut.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Cut.Name = "Cut";
-            this.Cut.Size = new System.Drawing.Size(75, 23);
+            this.Cut.Size = new System.Drawing.Size(112, 35);
             this.Cut.TabIndex = 8;
             this.Cut.Text = "Cut";
             this.Cut.UseVisualStyleBackColor = true;
@@ -129,9 +134,10 @@ namespace WaveAnalyzer
             // 
             // Paste
             // 
-            this.Paste.Location = new System.Drawing.Point(175, 253);
+            this.Paste.Location = new System.Drawing.Point(262, 389);
+            this.Paste.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Paste.Name = "Paste";
-            this.Paste.Size = new System.Drawing.Size(75, 23);
+            this.Paste.Size = new System.Drawing.Size(112, 35);
             this.Paste.TabIndex = 9;
             this.Paste.Text = "Paste";
             this.Paste.UseVisualStyleBackColor = true;
@@ -139,11 +145,11 @@ namespace WaveAnalyzer
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.BackgroundImage = global::WaveAnalyzer.Properties.Resources.arthur;
-            this.ClientSize = new System.Drawing.Size(922, 539);
+            this.ClientSize = new System.Drawing.Size(1383, 829);
             this.Controls.Add(this.Paste);
             this.Controls.Add(this.Cut);
             this.Controls.Add(this.Copy);
@@ -152,6 +158,7 @@ namespace WaveAnalyzer
             this.Controls.Add(this.Clear);
             this.Controls.Add(this.chart1);
             this.Controls.Add(this.File);
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "Form1";
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();

@@ -23,7 +23,7 @@ namespace WaveAnalyzer
         public static extern int Function2(int x, int y);
         //need to marshal or something to get hinstance and pstr
         [DllImport("Record.dll", CallingConvention = CallingConvention.Winapi)]
-        public static extern int DllMain(IntPtr hinstanceorsomeshit);
+        public static extern int start();
         [DllImport("Volume.dll")]
         public static extern void changeVolume(double[] amplitudes, double change);
         private string filePath;
@@ -32,6 +32,8 @@ namespace WaveAnalyzer
         private double[] copy;
         private double xstart;
         private double xend;
+        private Color linecolor = Color.FromArgb(255, 105, 180);
+        private IntPtr hwnd;
         private WavReader globalWavHdr = new WavReader();
         public Form1()
         {
@@ -90,7 +92,7 @@ namespace WaveAnalyzer
         public void OpenFile(string fileName)
         {
             filePath = fileName;
-            this.Text = fileName;
+            Text = fileName;
             globalFreq = readingWave(filePath);
             //Complex[] complexNumbers = Fourier.DFT(globalFreq, 1000);
             //globalAmp = Fourier.getAmplitudes(complexNumbers);
@@ -112,6 +114,8 @@ namespace WaveAnalyzer
             }
             chart1.ChartAreas[0].CursorX.IsUserEnabled = true;
             chart1.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
+            chart1.Series["Original"].Color = linecolor;
+            chart1.ChartAreas[0].CursorX.SelectionColor = linecolor;
         }
 
         private void File_Click(object sender, EventArgs e)
@@ -146,8 +150,7 @@ namespace WaveAnalyzer
 
         private void button1_Click(object sender, EventArgs e)
         {
-            IntPtr hwnd = Marshal.GetHINSTANCE(typeof(Form1).Module);
-            DllMain(hwnd);
+            start();
         }
 
         private void Copy_Click(object sender, EventArgs e)
@@ -159,23 +162,35 @@ namespace WaveAnalyzer
                 copy[nums] = globalFreq[i];
                 nums++;
             }
+            Fourier.printSamplesTrace(copy);
         }
 
         private void Paste_Click(object sender, EventArgs e)
         {
-            for (int i = copy.Length - 1; i > 0; i--)
+            double[] newfreq = new double[globalFreq.Length + copy.Length];
+            for (int i = 0; i < (int)xstart; i++)
             {
-                chart1.Series["Original"].Points.InsertXY((int)xstart, copy[i]);
+                newfreq[i] = globalFreq[i];
             }
+            for (int i = 0; i < copy.Length; i++)
+            {
+                newfreq[i + (int) xstart] = copy[i];
+            }
+            for (int i = (int)xstart + copy.Length; i < newfreq.Length; i++)
+            {
+                newfreq[i] = globalFreq[i - copy.Length];
+            }
+            globalFreq = newfreq;
+            plotFreqWaveChart(globalFreq);
         }
 
         private void Cut_Click(object sender, EventArgs e)
         {
             Copy_Click(sender, e);
-            for (int i = (int) xstart; i <= (int) xend; i++)
-            {
-                chart1.Series["Original"].Points.RemoveAt(i);
-            }
+            var list = globalFreq.ToList();
+            list.RemoveRange((int)xstart, (int)xend - (int)xstart);
+            globalFreq = list.ToArray();
+            plotFreqWaveChart(globalFreq);
         }
     }
 }

@@ -48,3 +48,13 @@ C:\Users\banga\Desktop\Dennis_Project\Dennis_Project\obj\Debug\WaveAnalyzer.cspr
 C:\Users\banga\Desktop\Dennis_Project\Dennis_Project\obj\Debug\WaveAnalyzer.csproj.CoreCompileInputs.cache
 C:\Users\banga\Desktop\Dennis_Project\Dennis_Project\obj\Debug\WaveAnalyzer.exe
 C:\Users\banga\Desktop\Dennis_Project\Dennis_Project\obj\Debug\WaveAnalyzer.pdb
+C:\Users\banga\Source\Repos\Dennis_Project_Git\obj\Debug\WaveAnalyzer.csproj.AssemblyReference.cache
+C:\Users\banga\Source\Repos\Dennis_Project_Git\obj\Debug\WaveAnalyzer.Form1.resources
+C:\Users\banga\Source\Repos\Dennis_Project_Git\obj\Debug\WaveAnalyzer.Properties.Resources.resources
+C:\Users\banga\Source\Repos\Dennis_Project_Git\obj\Debug\WaveAnalyzer.csproj.GenerateResource.cache
+C:\Users\banga\Source\Repos\Dennis_Project_Git\obj\Debug\WaveAnalyzer.csproj.CoreCompileInputs.cache
+C:\Users\banga\Source\Repos\Dennis_Project_Git\obj\Debug\WaveAnalyzer.exe
+C:\Users\banga\Source\Repos\Dennis_Project_Git\obj\Debug\WaveAnalyzer.pdb
+C:\Users\banga\Source\Repos\Dennis_Project_Git\bin\Debug\WaveAnalyzer.exe.config
+C:\Users\banga\Source\Repos\Dennis_Project_Git\bin\Debug\WaveAnalyzer.exe
+C:\Users\banga\Source\Repos\Dennis_Project_Git\bin\Debug\WaveAnalyzer.pdb

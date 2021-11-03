@@ -12,20 +12,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using Microsoft.Win32;
+using System.Runtime;
 
 namespace WaveAnalyzer
 {
     public partial class Form1 : Form
     {
-        [DllImport("PleaseWork.dll")]
-        public static extern int Function1(int x, int y);
-        [DllImport("PleaseWork.dll")]
-        public static extern int Function2(int x, int y);
         //need to marshal or something to get hinstance and pstr
-        [DllImport("Record.dll", CallingConvention = CallingConvention.Winapi)]
-        public static extern int start();
-        [DllImport("Volume.dll")]
-        public static extern void changeVolume(double[] amplitudes, double change);
+        [DllImport("Record.dll", CallingConvention = CallingConvention.Winapi)] public static extern int start();
         private string filePath;
         private double[] globalFreq;
         //private double[] globalAmp;
@@ -33,13 +27,10 @@ namespace WaveAnalyzer
         private double xstart;
         private double xend;
         private Color linecolor = Color.FromArgb(255, 105, 180);
-        private IntPtr hwnd;
         private WavReader globalWavHdr = new WavReader();
         public Form1()
         {
             InitializeComponent();
-            Trace.WriteLine(Function1(1, 2));
-            Trace.WriteLine(Function2(1, 2));
             //double[] s = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
             //double[] fw = {1, 0.2, 0.2, 0, 1, 0.1, 0.1, 1};
             //double[] samples = Fourier.convolve(s, fw);
@@ -55,8 +46,9 @@ namespace WaveAnalyzer
             Fourier.printSamplesTrace(myfilter);
             myfilter = Fourier.highPassFilter(size, fcut, srate);
             Fourier.printSamplesTrace(myfilter);
-            //IntPtr hwnd = Marshal.GetHINSTANCE(System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0]);
-            //IntPtr hwnd = Marshal.GetHINSTANCE(typeof(Form).Module);
+            double[] huffmantest = {5, 10, 15, 10, 8, 10, 15, 5, 8, 3, 8, 5, 8, 10, 10, 15, 10, 10, 8, 5, 5};
+            Trace.WriteLine(Fourier.entropy(huffmantest));
+            Fourier.printSamplesTrace(Fourier.uniquearr(huffmantest));
         }
 
         public double[] readingWave(String fileName)

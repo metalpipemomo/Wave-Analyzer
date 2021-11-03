@@ -135,6 +135,48 @@ namespace WaveAnalyzer
             }
             return samples;
         }
+
+        //huffman
+        public static double entropy(double[] samples)
+        {
+            double size = (double)samples.Length;
+            double entropy = 0;
+            double[] uniquearray = uniquearr(samples);
+            for (int i = 0; i < uniquearray.Length; i++)
+            {
+                entropy += (findoccurance(samples, uniquearray[i])/size) * Math.Log(size/(findoccurance(samples, uniquearray[i])), 2);
+            }
+            return entropy;
+        }
+
+        //entropy helper
+        public static double findoccurance(double[] samples, double num)
+        {
+            int occurs = 0;
+            for (int i = 0; i < samples.Length; i++)
+            {
+                if (samples[i] == num)
+                {
+                    occurs++;
+                }
+            }
+            return (double) occurs;
+        }
+
+        //entropy helper
+        public static double[] uniquearr(double[] samples)
+        {
+            List<double> uniquearr = new List<double>();
+            for (int i = 0; i < samples.Length; i++)
+            {
+                if (!uniquearr.Contains(samples[i]))
+                {
+                    uniquearr.Add(samples[i]);
+                }
+            }
+            return uniquearr.ToArray();
+        }
+
         //Printing Samples
         public static void printSamples(double[] S)
         {

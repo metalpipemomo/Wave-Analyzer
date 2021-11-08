@@ -149,6 +149,7 @@ namespace WaveAnalyzer
             return entropy;
         }
 
+        //0.47943, 0.2551, 0.6521, 0.76237, 0.48477, 0.4255
         //entropy helper
         public static double findoccurance(double[] samples, double num)
         {

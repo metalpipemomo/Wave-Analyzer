@@ -31,6 +31,8 @@ namespace WaveAnalyzer
         public Form1()
         {
             InitializeComponent();
+            chartStyling();
+            buttonStyling();
             //double[] s = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
             //double[] fw = {1, 0.2, 0.2, 0, 1, 0.1, 0.1, 1};
             //double[] samples = Fourier.convolve(s, fw);
@@ -46,9 +48,34 @@ namespace WaveAnalyzer
             Fourier.printSamplesTrace(myfilter);
             myfilter = Fourier.highPassFilter(size, fcut, srate);
             Fourier.printSamplesTrace(myfilter);
+            //0.20915, 0.985899, 0.52832, 0.40105
             double[] huffmantest = {5, 10, 15, 10, 8, 10, 15, 5, 8, 3, 8, 5, 8, 10, 10, 15, 10, 10, 8, 5, 5};
             Trace.WriteLine(Fourier.entropy(huffmantest));
             Fourier.printSamplesTrace(Fourier.uniquearr(huffmantest));
+        }
+
+        private void chartStyling()
+        {
+            chart1.ChartAreas[0].AxisX.Minimum = 0;
+            chart1.ChartAreas[0].AxisX.Maximum = Double.NaN;
+            chart1.ChartAreas[0].AxisX.ScrollBar.Enabled = true;
+            chart1.ChartAreas[0].AxisX.ScrollBar.ButtonStyle = ScrollBarButtonStyles.SmallScroll;
+            chart1.ChartAreas[0].AxisX.ScaleView.Zoomable = false;
+            chart1.ChartAreas[0].CursorX.IsUserEnabled = true;
+            chart1.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
+            chart1.Series["Original"].Color = linecolor;
+            chart1.ChartAreas[0].CursorX.SelectionColor = linecolor;
+            chart1.ChartAreas[0].BackColor = Color.SlateGray;
+            chart1.ChartAreas[0].AxisX.ScrollBar.BackColor = Color.White;
+        }
+
+        private void buttonStyling()
+        {
+            Cut.Enabled = false;
+            Copy.Enabled = false;
+            Paste.Enabled = false;
+            Clear.Enabled = false;
+            Save.Enabled = false;
         }
 
         public double[] readingWave(String fileName)
@@ -86,28 +113,21 @@ namespace WaveAnalyzer
             filePath = fileName;
             Text = fileName;
             globalFreq = readingWave(filePath);
-            //Complex[] complexNumbers = Fourier.DFT(globalFreq, 1000);
-            //globalAmp = Fourier.getAmplitudes(complexNumbers);
             plotFreqWaveChart(globalFreq);
         }
 
         public void plotFreqWaveChart(double[] array)
         {
             chart1.Series["Original"].Points.Clear();
-            chart1.ChartAreas[0].AxisX.Minimum = 0;
-            chart1.ChartAreas[0].AxisX.Maximum = Double.NaN;
-            chart1.ChartAreas[0].AxisX.ScrollBar.Enabled = true;
-            chart1.ChartAreas[0].AxisX.ScrollBar.ButtonStyle = ScrollBarButtonStyles.SmallScroll;
-            chart1.ChartAreas[0].AxisX.ScaleView.Size = array.Length / 100;
-            chart1.ChartAreas[0].AxisX.ScaleView.Zoomable = false;
             for (int i = 0; i < array.Length; i++)
             {
                 chart1.Series["Original"].Points.AddXY(i, array[i]);
             }
-            chart1.ChartAreas[0].CursorX.IsUserEnabled = true;
-            chart1.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
-            chart1.Series["Original"].Color = linecolor;
-            chart1.ChartAreas[0].CursorX.SelectionColor = linecolor;
+            chart1.ChartAreas[0].AxisX.ScaleView.Size = array.Length / 100;
+            Clear.Enabled = true;
+            Save.Enabled = true;
+            Cut.Enabled = true;
+            Copy.Enabled = true;
         }
 
         private void File_Click(object sender, EventArgs e)
@@ -134,6 +154,7 @@ namespace WaveAnalyzer
         private void Clear_Click(object sender, EventArgs e)
         {
             chart1.Series["Original"].Points.Clear();
+            buttonStyling();
         }
 
         private void Save_Click(object sender, EventArgs e)
@@ -154,6 +175,7 @@ namespace WaveAnalyzer
                 copy[nums] = globalFreq[i];
                 nums++;
             }
+            Paste.Enabled = true;
             Fourier.printSamplesTrace(copy);
         }
 

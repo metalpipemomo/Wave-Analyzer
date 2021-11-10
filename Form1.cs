@@ -33,13 +33,11 @@ namespace WaveAnalyzer
             InitializeComponent();
             chartStyling();
             buttonStyling();
-            //double[] s = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
-            //double[] fw = {1, 0.2, 0.2, 0, 1, 0.1, 0.1, 1};
-            //double[] samples = Fourier.convolve(s, fw);
-            //for (int i = 0; i < samples.Length; i++)
-            //{
-            //    Trace.WriteLine(i + " " + samples[i]);
-            //}
+            double[] s = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
+            double[] fw = {1, 0.2, 0.2, 0, 1, 0.1, 0.1, 1};
+            double[] samples = Fourier.convolve(s, fw);
+            Trace.WriteLine("Convolution Test:");
+            Fourier.printSamplesTrace(samples);
             Trace.WriteLine("Filter Test:");
             double srate = 1000;
             double fcut = 300;
@@ -48,25 +46,28 @@ namespace WaveAnalyzer
             Fourier.printSamplesTrace(myfilter);
             myfilter = Fourier.highPassFilter(size, fcut, srate);
             Fourier.printSamplesTrace(myfilter);
-            //0.20915, 0.985899, 0.52832, 0.40105
-            double[] huffmantest = {5, 10, 15, 10, 8, 10, 15, 5, 8, 3, 8, 5, 8, 10, 10, 15, 10, 10, 8, 5, 5};
-            Trace.WriteLine(Fourier.entropy(huffmantest));
-            Fourier.printSamplesTrace(Fourier.uniquearr(huffmantest));
+            double[] shannonentropytest = {5, 10, 15, 10, 8, 10, 15, 5, 8, 3, 8, 5, 8, 10, 10, 15, 10, 10, 8, 5, 5};
+            Trace.WriteLine("Shannon Entropy Test:");
+            Trace.WriteLine(Fourier.entropy(shannonentropytest));
+            Fourier.printSamplesTrace(Fourier.uniquearr(shannonentropytest));
+            Fourier.printSamplesTrace(Fourier.inverseDFT(Fourier.convertFilter(myfilter), myfilter.Length));
         }
 
         private void chartStyling()
         {
-            chart1.ChartAreas[0].AxisX.Minimum = 0;
-            chart1.ChartAreas[0].AxisX.Maximum = Double.NaN;
-            chart1.ChartAreas[0].AxisX.ScrollBar.Enabled = true;
-            chart1.ChartAreas[0].AxisX.ScrollBar.ButtonStyle = ScrollBarButtonStyles.SmallScroll;
-            chart1.ChartAreas[0].AxisX.ScaleView.Zoomable = false;
-            chart1.ChartAreas[0].CursorX.IsUserEnabled = true;
-            chart1.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
-            chart1.Series["Original"].Color = linecolor;
-            chart1.ChartAreas[0].CursorX.SelectionColor = linecolor;
-            chart1.ChartAreas[0].BackColor = Color.SlateGray;
-            chart1.ChartAreas[0].AxisX.ScrollBar.BackColor = Color.White;
+            var ca = chart1.ChartAreas[0];
+            var cs = chart1.Series["Original"];
+            ca.AxisX.Minimum = 0;
+            ca.AxisX.Maximum = Double.NaN;
+            ca.AxisX.ScrollBar.Enabled = true;
+            ca.AxisX.ScrollBar.ButtonStyle = ScrollBarButtonStyles.SmallScroll;
+            ca.AxisX.ScaleView.Zoomable = false;
+            ca.CursorX.IsUserEnabled = true;
+            ca.CursorX.IsUserSelectionEnabled = true;
+            cs.Color = linecolor;
+            ca.CursorX.SelectionColor = linecolor;
+            ca.BackColor = Color.SlateGray;
+            ca.AxisX.ScrollBar.BackColor = Color.White;
         }
 
         private void buttonStyling()

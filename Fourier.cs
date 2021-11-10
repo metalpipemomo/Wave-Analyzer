@@ -116,6 +116,18 @@ namespace WaveAnalyzer
             return highpass;
         }
 
+        //convert filter to complex arr
+        public static Complex[] convertFilter(double[] samples)
+        {
+            Complex[] arr = new Complex[samples.Length];
+            for (int i = 0; i < samples.Length; i++)
+            {
+                arr[i].real = samples[i];
+                arr[i].imaginary = 0;
+            }
+            return arr;
+        }
+
         //convolution
         public static double[] convolve(double[] s, double[] fw)
         {
@@ -149,7 +161,6 @@ namespace WaveAnalyzer
             return entropy;
         }
 
-        //0.47943, 0.2551, 0.6521, 0.76237, 0.48477, 0.4255
         //entropy helper
         public static double findoccurance(double[] samples, double num)
         {

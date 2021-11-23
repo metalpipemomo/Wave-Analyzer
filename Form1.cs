@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using Microsoft.Win32;
 using System.Runtime;
+using System.Threading;
 
 namespace WaveAnalyzer
 {
@@ -31,32 +32,35 @@ namespace WaveAnalyzer
         public Form1()
         {
             InitializeComponent();
+            this.Text = "Mo's Wave Analyzer";
             chartStyling();
             buttonStyling();
-            double[] s = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
-            double[] fw = {1, 0.2, 0.2, 0, 1, 0.1, 0.1, 1};
-            double[] samples = Fourier.convolve(s, fw);
-            Trace.WriteLine("Convolution Test:");
-            Fourier.printSamplesTrace(samples);
-            Trace.WriteLine("Filter Test:");
-            double srate = 1000;
-            double fcut = 300;
-            int size = 16;
-            double[] myfilter = Fourier.lowPassFilter(size, fcut, srate);
-            Fourier.printSamplesTrace(myfilter);
-            myfilter = Fourier.highPassFilter(size, fcut, srate);
-            Fourier.printSamplesTrace(myfilter);
-            double[] shannonentropytest = {5, 10, 15, 10, 8, 10, 15, 5, 8, 3, 8, 5, 8, 10, 10, 15, 10, 10, 8, 5, 5};
-            Trace.WriteLine("Shannon Entropy Test:");
-            Trace.WriteLine(Fourier.entropy(shannonentropytest));
-            Fourier.printSamplesTrace(Fourier.uniquearr(shannonentropytest));
-            Fourier.printSamplesTrace(Fourier.inverseDFT(Fourier.convertFilter(myfilter), myfilter.Length));
+            
+            //double[] s = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
+            //double[] fw = {1, 0.2, 0.2, 0, 1, 0.1, 0.1, 1};
+            //double[] samples = Fourier.convolve(s, fw);
+            //Trace.WriteLine("Convolution Test:");
+            //Fourier.printSamplesTrace(samples);
+            //Trace.WriteLine("Filter Test:");
+            //double srate = 1000;
+            //double fcut = 300;
+            //int size = 16;
+            //double[] myfilter = Fourier.lowPassFilter(size, fcut, srate);
+            //Fourier.printSamplesTrace(myfilter);
+            //myfilter = Fourier.highPassFilter(size, fcut, srate);
+            //Fourier.printSamplesTrace(myfilter);
+            //double[] shannonentropytest = {5, 10, 15, 10, 8, 10, 15, 5, 8, 3, 8, 5, 8, 10, 10, 15, 10, 10, 8, 5, 5};
+            //Trace.WriteLine("Shannon Entropy Test:");
+            //Trace.WriteLine(Fourier.entropy(shannonentropytest));
+            //Fourier.printSamplesTrace(Fourier.uniquearr(shannonentropytest));
+            //Fourier.printSamplesTrace(Fourier.inverseDFT(Fourier.convertFilter(myfilter), myfilter.Length));
         }
 
         private void chartStyling()
         {
             var ca = chart1.ChartAreas[0];
             var cs = chart1.Series["Original"];
+            cs.ChartType = SeriesChartType.FastLine;
             ca.AxisX.Minimum = 0;
             ca.AxisX.Maximum = Double.NaN;
             ca.AxisX.ScrollBar.Enabled = true;
@@ -112,7 +116,7 @@ namespace WaveAnalyzer
         public void OpenFile(string fileName)
         {
             filePath = fileName;
-            Text = fileName;
+            //Text = fileName;
             globalFreq = readingWave(filePath);
             plotFreqWaveChart(globalFreq);
         }
@@ -124,7 +128,7 @@ namespace WaveAnalyzer
             {
                 chart1.Series["Original"].Points.AddXY(i, array[i]);
             }
-            chart1.ChartAreas[0].AxisX.ScaleView.Size = array.Length / 100;
+            chart1.ChartAreas[0].AxisX.ScaleView.Size = array.Length / 50;
             Clear.Enabled = true;
             Save.Enabled = true;
             Cut.Enabled = true;
@@ -160,6 +164,7 @@ namespace WaveAnalyzer
 
         private void Save_Click(object sender, EventArgs e)
         {
+
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -206,6 +211,11 @@ namespace WaveAnalyzer
             list.RemoveRange((int)xstart, (int)xend - (int)xstart);
             globalFreq = list.ToArray();
             plotFreqWaveChart(globalFreq);
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

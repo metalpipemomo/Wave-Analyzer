@@ -29,6 +29,9 @@ namespace WaveAnalyzer
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
@@ -41,7 +44,9 @@ namespace WaveAnalyzer
             this.Copy = new System.Windows.Forms.Button();
             this.Cut = new System.Windows.Forms.Button();
             this.Paste = new System.Windows.Forms.Button();
+            this.FourierChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.FourierChart)).BeginInit();
             this.SuspendLayout();
             // 
             // File
@@ -59,23 +64,24 @@ namespace WaveAnalyzer
             this.chart1.BackColor = System.Drawing.Color.SlateGray;
             this.chart1.BorderlineColor = System.Drawing.Color.SlateGray;
             this.chart1.BorderlineWidth = 2;
-            chartArea2.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea2);
-            legend2.Name = "Legend1";
-            this.chart1.Legends.Add(legend2);
+            chartArea1.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            this.chart1.Legends.Add(legend1);
             this.chart1.Location = new System.Drawing.Point(12, 68);
             this.chart1.Name = "chart1";
             this.chart1.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
-            series2.ChartArea = "ChartArea1";
-            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series2.IsVisibleInLegend = false;
-            series2.Legend = "Legend1";
-            series2.Name = "Original";
-            series2.YValuesPerPoint = 10;
-            this.chart1.Series.Add(series2);
+            series1.ChartArea = "ChartArea1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series1.IsVisibleInLegend = false;
+            series1.Legend = "Legend1";
+            series1.Name = "Original";
+            series1.YValuesPerPoint = 10;
+            this.chart1.Series.Add(series1);
             this.chart1.Size = new System.Drawing.Size(894, 179);
             this.chart1.TabIndex = 1;
             this.chart1.Click += new System.EventHandler(this.chart1_Click);
+            this.chart1.MouseWheel += chart1_MouseWheel;
             // 
             // Clear
             // 
@@ -138,12 +144,32 @@ namespace WaveAnalyzer
             this.Paste.UseVisualStyleBackColor = true;
             this.Paste.Click += new System.EventHandler(this.Paste_Click);
             // 
+            // FourierChart
+            // 
+            chartArea2.Name = "ChartArea1";
+            this.FourierChart.ChartAreas.Add(chartArea2);
+            legend2.Name = "Legend1";
+            this.FourierChart.Legends.Add(legend2);
+            this.FourierChart.Location = new System.Drawing.Point(12, 307);
+            this.FourierChart.Name = "FourierChart";
+            series2.ChartArea = "ChartArea1";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series2.IsVisibleInLegend = false;
+            series2.IsXValueIndexed = true;
+            series2.Legend = "Legend1";
+            series2.Name = "Fourier";
+            this.FourierChart.Series.Add(series2);
+            this.FourierChart.Size = new System.Drawing.Size(894, 179);
+            this.FourierChart.TabIndex = 10;
+            this.FourierChart.Text = "chart2";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.SlateGray;
             this.ClientSize = new System.Drawing.Size(922, 539);
+            this.Controls.Add(this.FourierChart);
             this.Controls.Add(this.Paste);
             this.Controls.Add(this.Cut);
             this.Controls.Add(this.Copy);
@@ -157,6 +183,7 @@ namespace WaveAnalyzer
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.FourierChart)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -171,6 +198,7 @@ namespace WaveAnalyzer
         private System.Windows.Forms.Button Copy;
         private System.Windows.Forms.Button Cut;
         private System.Windows.Forms.Button Paste;
+        private System.Windows.Forms.DataVisualization.Charting.Chart FourierChart;
     }
 }
 

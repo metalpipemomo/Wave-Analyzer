@@ -58,6 +58,7 @@ namespace WaveAnalyzer
             }
             return A;
         }
+        //public static Complex[] FastForwardFourier(double[])
         //Inverse Discrete Fourier Transform
         public static double[] inverseDFT(Complex[] A, int N)
         {

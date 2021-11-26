@@ -26,6 +26,7 @@ namespace WaveAnalyzer
         [DllImport("Record.dll")] public static extern int getDwLength();
         private string filePath;
         private double[] globalFreq;
+        private byte[] data;
         //private double[] globalAmp;
         private double[] copy;
         private double xstart;
@@ -57,6 +58,8 @@ namespace WaveAnalyzer
             ca.CursorX.SelectionColor = linecolor;
             ca.BackColor = Color.SlateGray;
             ca.AxisX.ScrollBar.BackColor = Color.White;
+            ca.AxisX.MajorGrid.Enabled = false;
+            ca.AxisY.MajorGrid.Enabled = false;
         }
 
         private void buttonStyling()
@@ -87,6 +90,7 @@ namespace WaveAnalyzer
             globalWavHdr.SubChunk2ID = reader.ReadInt32();
             globalWavHdr.SubChunk2Size = reader.ReadInt32();
             byteArray = reader.ReadBytes((int)globalWavHdr.SubChunk2Size);
+            data = byteArray;
             /*fixed (byte* ptr = byteArray)
             {
                 setBuffer(ptr);
@@ -168,12 +172,20 @@ namespace WaveAnalyzer
         {
             FileStream fs = new FileStream("C:\\Users\\banga\\Downloads\\Written.wav", FileMode.CreateNew);
             BinaryWriter writer = new BinaryWriter(fs);
-            writer.Write("RIFF"); //RIFF
-            writer.Write(); //File Size (integer)
-            writer.Write("WAVE"); //WAVE
-            writer.Write("fmt");//fmt
-            //
-
+            writer.Write(globalWavHdr.ChunkID); //RIFF
+            writer.Write(globalWavHdr.ChunkSize); //File Size (integer)
+            writer.Write(globalWavHdr.Format); //WAVE
+            writer.Write(globalWavHdr.SubChunk1ID);//fmt
+            writer.Write(globalWavHdr.SubChunk1Size); //length of above data
+            writer.Write(globalWavHdr.AudioFormat); //PCM
+            writer.Write(globalWavHdr.NumChannels); //Channel numbers
+            writer.Write(globalWavHdr.SampleRate); //Sample rate
+            writer.Write(globalWavHdr.ByteRate); //Byte rate
+            writer.Write(globalWavHdr.BlockAlign);
+            writer.Write(globalWavHdr.BitsPerSample);
+            writer.Write(globalWavHdr.SubChunk2ID);
+            writer.Write(globalWavHdr.SubChunk2Size);
+            writer.Write(data);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -285,12 +297,21 @@ namespace WaveAnalyzer
             Fourier.printSamplesTrace(Fourier.uniquearr(shannonentropytest));
             Fourier.printSamplesTrace(Fourier.inverseDFT(Fourier.convertFilter(myfilter), myfilter.Length));
         }
-        public byte[] toByteArr(double[] d)
+
+        private void hannWindowToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            short[] shortArray = new short[globalWavHdr.SubChunk2Size / globalWavHdr.BlockAlign];
-            byte[] bytearr = new byte[shortArray.Length * 2];
-            shortArray = globalFreq.Select(x => (short)(x)).ToArray();
-            bytearr = Array.ConvertAll(new Converter<short, byte>(shortArray));
+
+        }
+
+        private void triangularWindowToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void generateFilterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form dialog = new Form();
+            dialog.Show();
         }
     }
 }

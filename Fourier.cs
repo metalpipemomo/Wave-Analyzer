@@ -190,6 +190,29 @@ namespace WaveAnalyzer
             return uniquearr.ToArray();
         }
 
+        //
+        public static double[] triangleWindow(double[] samples)
+        {
+            int N = samples.Length;
+            double[] w = new double[N];
+            for (int n = 0; n < N; ++n)
+            {
+                w[n] = 1 - Math.Abs((n - (N / 2)) / ((N + 1) / 2));
+            }
+            return w;
+        }
+
+        public static double[] hannWindow(double[] samples)
+        {
+            int N = samples.Length;
+            double[] w = new double[N];
+            for (int n = 0; n < N; ++n)
+            {
+                w[n] = 0.5 * (1 - Math.Cos((2 * Math.PI * n) / N));
+            }
+            return w;
+        }
+
         //Printing Samples
         public static void printSamples(double[] S)
         {

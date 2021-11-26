@@ -32,9 +32,6 @@ namespace WaveAnalyzer
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.File = new System.Windows.Forms.Button();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
@@ -44,9 +41,13 @@ namespace WaveAnalyzer
             this.Copy = new System.Windows.Forms.Button();
             this.Cut = new System.Windows.Forms.Button();
             this.Paste = new System.Windows.Forms.Button();
-            this.FourierChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.somethingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.hannWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.triangularWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.generateFilterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.FourierChart)).BeginInit();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // File
@@ -81,7 +82,6 @@ namespace WaveAnalyzer
             this.chart1.Size = new System.Drawing.Size(894, 179);
             this.chart1.TabIndex = 1;
             this.chart1.Click += new System.EventHandler(this.chart1_Click);
-            this.chart1.MouseWheel += chart1_MouseWheel;
             // 
             // Clear
             // 
@@ -144,24 +144,46 @@ namespace WaveAnalyzer
             this.Paste.UseVisualStyleBackColor = true;
             this.Paste.Click += new System.EventHandler(this.Paste_Click);
             // 
-            // FourierChart
+            // menuStrip1
             // 
-            chartArea2.Name = "ChartArea1";
-            this.FourierChart.ChartAreas.Add(chartArea2);
-            legend2.Name = "Legend1";
-            this.FourierChart.Legends.Add(legend2);
-            this.FourierChart.Location = new System.Drawing.Point(12, 307);
-            this.FourierChart.Name = "FourierChart";
-            series2.ChartArea = "ChartArea1";
-            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series2.IsVisibleInLegend = false;
-            series2.IsXValueIndexed = true;
-            series2.Legend = "Legend1";
-            series2.Name = "Fourier";
-            this.FourierChart.Series.Add(series2);
-            this.FourierChart.Size = new System.Drawing.Size(894, 179);
-            this.FourierChart.TabIndex = 10;
-            this.FourierChart.Text = "chart2";
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.somethingToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(922, 24);
+            this.menuStrip1.TabIndex = 10;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // somethingToolStripMenuItem
+            // 
+            this.somethingToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.hannWindowToolStripMenuItem,
+            this.triangularWindowToolStripMenuItem,
+            this.generateFilterToolStripMenuItem});
+            this.somethingToolStripMenuItem.Name = "somethingToolStripMenuItem";
+            this.somethingToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
+            this.somethingToolStripMenuItem.Text = "DFT";
+            // 
+            // hannWindowToolStripMenuItem
+            // 
+            this.hannWindowToolStripMenuItem.Name = "hannWindowToolStripMenuItem";
+            this.hannWindowToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.hannWindowToolStripMenuItem.Text = "Hann Window";
+            this.hannWindowToolStripMenuItem.Click += new System.EventHandler(this.hannWindowToolStripMenuItem_Click);
+            // 
+            // triangularWindowToolStripMenuItem
+            // 
+            this.triangularWindowToolStripMenuItem.Name = "triangularWindowToolStripMenuItem";
+            this.triangularWindowToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.triangularWindowToolStripMenuItem.Text = "Triangular Window";
+            this.triangularWindowToolStripMenuItem.Click += new System.EventHandler(this.triangularWindowToolStripMenuItem_Click);
+            // 
+            // generateFilterToolStripMenuItem
+            // 
+            this.generateFilterToolStripMenuItem.Name = "generateFilterToolStripMenuItem";
+            this.generateFilterToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.generateFilterToolStripMenuItem.Text = "Generate Filter";
+            this.generateFilterToolStripMenuItem.Click += new System.EventHandler(this.generateFilterToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -169,7 +191,6 @@ namespace WaveAnalyzer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.SlateGray;
             this.ClientSize = new System.Drawing.Size(922, 539);
-            this.Controls.Add(this.FourierChart);
             this.Controls.Add(this.Paste);
             this.Controls.Add(this.Cut);
             this.Controls.Add(this.Copy);
@@ -178,13 +199,17 @@ namespace WaveAnalyzer
             this.Controls.Add(this.Clear);
             this.Controls.Add(this.chart1);
             this.Controls.Add(this.File);
+            this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.FourierChart)).EndInit();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -198,7 +223,11 @@ namespace WaveAnalyzer
         private System.Windows.Forms.Button Copy;
         private System.Windows.Forms.Button Cut;
         private System.Windows.Forms.Button Paste;
-        private System.Windows.Forms.DataVisualization.Charting.Chart FourierChart;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem somethingToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem hannWindowToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem triangularWindowToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem generateFilterToolStripMenuItem;
     }
 }
 

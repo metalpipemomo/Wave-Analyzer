@@ -87,10 +87,10 @@ namespace WaveAnalyzer
             globalWavHdr.SubChunk2ID = reader.ReadInt32();
             globalWavHdr.SubChunk2Size = reader.ReadInt32();
             byteArray = reader.ReadBytes((int)globalWavHdr.SubChunk2Size);
-            fixed (byte* ptr = byteArray)
+            /*fixed (byte* ptr = byteArray)
             {
                 setBuffer(ptr);
-            }
+            }*/
             short[] shortArray = new short[globalWavHdr.SubChunk2Size / globalWavHdr.BlockAlign];
             double[] outputArray;
             for (int i = 0; i < globalWavHdr.SubChunk2Size / globalWavHdr.BlockAlign; i++)
@@ -166,6 +166,13 @@ namespace WaveAnalyzer
 
         private void Save_Click(object sender, EventArgs e)
         {
+            FileStream fs = new FileStream("C:\\Users\\banga\\Downloads\\Written.wav", FileMode.CreateNew);
+            BinaryWriter writer = new BinaryWriter(fs);
+            writer.Write("RIFF"); //RIFF
+            writer.Write(); //File Size (integer)
+            writer.Write("WAVE"); //WAVE
+            writer.Write("fmt");//fmt
+            //
 
         }
 
@@ -237,6 +244,7 @@ namespace WaveAnalyzer
                     var frame = _zoomFrames.Pop();
                     if (_zoomFrames.Count == 0)
                     {
+                        xAxis.ScaleView.ZoomReset();
                         xAxis.ScaleView.Size = globalFreq.Length / 25;
                     } 
                     else
@@ -276,6 +284,13 @@ namespace WaveAnalyzer
             Trace.WriteLine(Fourier.entropy(shannonentropytest));
             Fourier.printSamplesTrace(Fourier.uniquearr(shannonentropytest));
             Fourier.printSamplesTrace(Fourier.inverseDFT(Fourier.convertFilter(myfilter), myfilter.Length));
+        }
+        public byte[] toByteArr(double[] d)
+        {
+            short[] shortArray = new short[globalWavHdr.SubChunk2Size / globalWavHdr.BlockAlign];
+            byte[] bytearr = new byte[shortArray.Length * 2];
+            shortArray = globalFreq.Select(x => (short)(x)).ToArray();
+            bytearr = Array.ConvertAll(new Converter<short, byte>(shortArray));
         }
     }
 }

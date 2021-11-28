@@ -68,3 +68,5 @@ C:\Users\banga\Source\Repos\Dennis_Project_Home\obj\Debug\WaveAnalyzer.csproj.Ge
 C:\Users\banga\Source\Repos\Dennis_Project_Home\obj\Debug\WaveAnalyzer.csproj.CoreCompileInputs.cache
 C:\Users\banga\Source\Repos\Dennis_Project_Home\obj\Debug\WaveAnalyzer.exe
 C:\Users\banga\Source\Repos\Dennis_Project_Home\obj\Debug\WaveAnalyzer.pdb
+C:\Users\banga\Source\Repos\Dennis_Project_Home\obj\Debug\WaveAnalyzer.FourierForm.resources
+C:\Users\banga\Source\Repos\Dennis_Project_Home\obj\Debug\WaveAnalyzer.FreqCut.resources

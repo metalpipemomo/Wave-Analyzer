@@ -46,6 +46,12 @@ namespace WaveAnalyzer
             this.hannWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.triangularWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.generateFilterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.lowPassToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.highPassToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.Play = new System.Windows.Forms.Button();
+            this.Pause = new System.Windows.Forms.Button();
+            this.StartPlay = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -180,10 +186,65 @@ namespace WaveAnalyzer
             // 
             // generateFilterToolStripMenuItem
             // 
+            this.generateFilterToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.lowPassToolStripMenuItem,
+            this.highPassToolStripMenuItem});
             this.generateFilterToolStripMenuItem.Name = "generateFilterToolStripMenuItem";
             this.generateFilterToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.generateFilterToolStripMenuItem.Text = "Generate Filter";
             this.generateFilterToolStripMenuItem.Click += new System.EventHandler(this.generateFilterToolStripMenuItem_Click);
+            // 
+            // lowPassToolStripMenuItem
+            // 
+            this.lowPassToolStripMenuItem.Name = "lowPassToolStripMenuItem";
+            this.lowPassToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.lowPassToolStripMenuItem.Text = "Low-Pass";
+            this.lowPassToolStripMenuItem.Click += new System.EventHandler(this.lowPassToolStripMenuItem_Click);
+            // 
+            // highPassToolStripMenuItem
+            // 
+            this.highPassToolStripMenuItem.Name = "highPassToolStripMenuItem";
+            this.highPassToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.highPassToolStripMenuItem.Text = "High-Pass";
+            this.highPassToolStripMenuItem.Click += new System.EventHandler(this.highPassToolStripMenuItem_Click);
+            // 
+            // Play
+            // 
+            this.Play.Location = new System.Drawing.Point(317, 352);
+            this.Play.Name = "Play";
+            this.Play.Size = new System.Drawing.Size(75, 23);
+            this.Play.TabIndex = 11;
+            this.Play.Text = "Play";
+            this.Play.UseVisualStyleBackColor = true;
+            this.Play.Click += new System.EventHandler(this.Play_Click);
+            // 
+            // Pause
+            // 
+            this.Pause.Location = new System.Drawing.Point(409, 352);
+            this.Pause.Name = "Pause";
+            this.Pause.Size = new System.Drawing.Size(75, 23);
+            this.Pause.TabIndex = 12;
+            this.Pause.Text = "Pause";
+            this.Pause.UseVisualStyleBackColor = true;
+            // 
+            // StartPlay
+            // 
+            this.StartPlay.Location = new System.Drawing.Point(491, 352);
+            this.StartPlay.Name = "StartPlay";
+            this.StartPlay.Size = new System.Drawing.Size(75, 23);
+            this.StartPlay.TabIndex = 13;
+            this.StartPlay.Text = "button2";
+            this.StartPlay.UseVisualStyleBackColor = true;
+            this.StartPlay.Click += new System.EventHandler(this.StartPlay_Click);
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(573, 352);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.TabIndex = 14;
+            this.button3.Text = "button3";
+            this.button3.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -191,6 +252,10 @@ namespace WaveAnalyzer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.SlateGray;
             this.ClientSize = new System.Drawing.Size(922, 539);
+            this.Controls.Add(this.button3);
+            this.Controls.Add(this.StartPlay);
+            this.Controls.Add(this.Pause);
+            this.Controls.Add(this.Play);
             this.Controls.Add(this.Paste);
             this.Controls.Add(this.Cut);
             this.Controls.Add(this.Copy);
@@ -228,6 +293,12 @@ namespace WaveAnalyzer
         private System.Windows.Forms.ToolStripMenuItem hannWindowToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem triangularWindowToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem generateFilterToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem lowPassToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem highPassToolStripMenuItem;
+        private System.Windows.Forms.Button Play;
+        private System.Windows.Forms.Button Pause;
+        private System.Windows.Forms.Button StartPlay;
+        private System.Windows.Forms.Button button3;
     }
 }
 

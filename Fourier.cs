@@ -141,7 +141,7 @@ namespace WaveAnalyzer
                 {
                     if ((j + i) <= m)
                     {
-                        samples[i] += s[j + i] * fw[j];
+                        samples[i] += (s[j + i] * fw[j]) / fw.Length;
                         Array.Resize(ref s, m + (n - 1));
                     }
                 }
@@ -197,7 +197,7 @@ namespace WaveAnalyzer
             double[] w = new double[N];
             for (int n = 0; n < N; ++n)
             {
-                w[n] = 1 - Math.Abs((n - (N / 2)) / ((N + 1) / 2));
+                w[n] = samples[n] * (1 - Math.Abs((n - (N / 2)) / ((N + 1) / 2)));
             }
             return w;
         }
@@ -208,7 +208,7 @@ namespace WaveAnalyzer
             double[] w = new double[N];
             for (int n = 0; n < N; ++n)
             {
-                w[n] = 0.5 * (1 - Math.Cos((2 * Math.PI * n) / N));
+                w[n] = samples[n] * (1 - Math.Cos((2 * Math.PI * n) / N));
             }
             return w;
         }
@@ -243,13 +243,24 @@ namespace WaveAnalyzer
         //Get Amplitudes
         public static double[] getAmplitudes(Complex[] A)
         {
-            double[] Amplitudes = new double[A.Length / 2 + 1];
-            for (int i = 0; i < A.Length / 2 + 1; i++)
+            double[] Amplitudes = new double[A.Length];
+            for (int i = 0; i < A.Length; i++)
             {
                 Amplitudes[i] = Math.Sqrt(Math.Pow(A[i].real, 2)
                     + Math.Pow(A[i].imaginary, 2)) * 2;
             }
             return Amplitudes;
+        }
+        //Get Frequency
+        public static double[] getFrequency(Complex[] A, double samplerate)
+        {
+            double[] freqs = new double[A.Length];
+            int N = A.Length;
+            for (int f = 0; f < N; ++f)
+            {
+                freqs[f] = (f * samplerate) / N;
+            }
+            return freqs;
         }
         //Generate Samples
         public static double[] getSamples(CosWave[] wave, int N)

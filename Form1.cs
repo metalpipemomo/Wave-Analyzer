@@ -19,18 +19,22 @@ namespace WaveAnalyzer
 {
     public unsafe partial class Form1 : Form
     {
-        //need to marshal or something to get hinstance and pstr
-        [DllImport("Record.dll")] public static extern int start();
-        [DllImport("Record.dll")] public static extern IntPtr getBuffer();
-        [DllImport("Record.dll", CallingConvention = CallingConvention.Cdecl)] public static extern void setBuffer(byte* newpbuffer);
-        [DllImport("Record.dll")] public static extern int getDwLength();
+        [DllImport("RecordingDLL.dll")] public static extern int start();
+        [DllImport("RecordingDLL.dll")] public static extern IntPtr getBuffer();
+        [DllImport("RecordingDLL.dll", CallingConvention = CallingConvention.Cdecl)] public static extern void setBuffer(byte* newpbuffer, int length, ushort bps, ushort blockalign, uint samplerate, uint byterate);
+        [DllImport("RecordingDLL.dll")] public static extern int getDwLength();
+        [DllImport("RecordingDLL.dll")] public static extern IntPtr StartMessage();
+        [DllImport("RecordingDLL.dll")] public static extern IntPtr StopMessage();
+        [DllImport("RecordingDLL.dll")] public static extern IntPtr PlayMessage();
+        [DllImport("RecordingDLL.dll")] public static extern IntPtr PlayStopMessage();
         private string filePath;
         private double[] globalFreq;
         private byte[] data;
-        //private double[] globalAmp;
         private double[] copy;
         private double xstart;
         private double xend;
+        public static int freqinput;
+        private bool player = false;
         private Color linecolor = Color.FromArgb(255, 105, 180);
         private WavReader globalWavHdr = new WavReader();
         public Form1()
@@ -60,6 +64,7 @@ namespace WaveAnalyzer
             ca.AxisX.ScrollBar.BackColor = Color.White;
             ca.AxisX.MajorGrid.Enabled = false;
             ca.AxisY.MajorGrid.Enabled = false;
+            this.chart1.MouseWheel += chart1_MouseWheel;
         }
 
         private void buttonStyling()
@@ -91,10 +96,10 @@ namespace WaveAnalyzer
             globalWavHdr.SubChunk2Size = reader.ReadInt32();
             byteArray = reader.ReadBytes((int)globalWavHdr.SubChunk2Size);
             data = byteArray;
-            /*fixed (byte* ptr = byteArray)
+            fixed (byte* ptr = byteArray)
             {
-                setBuffer(ptr);
-            }*/
+                setBuffer(ptr, byteArray.Length, globalWavHdr.BitsPerSample, globalWavHdr.BlockAlign, globalWavHdr.SampleRate, globalWavHdr.ByteRate);
+            }
             short[] shortArray = new short[globalWavHdr.SubChunk2Size / globalWavHdr.BlockAlign];
             double[] outputArray;
             for (int i = 0; i < globalWavHdr.SubChunk2Size / globalWavHdr.BlockAlign; i++)
@@ -234,6 +239,8 @@ namespace WaveAnalyzer
             plotFreqWaveChart(globalFreq);
         }
 
+
+
         private void Form1_Load(object sender, EventArgs e)
         {
 
@@ -300,18 +307,129 @@ namespace WaveAnalyzer
 
         private void hannWindowToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            double[] hann = Fourier.hannWindow(copy);
+            FourierForm f = new FourierForm();
+            f.plotFourier(hann, globalWavHdr.SampleRate, "Hann Window");
+            f.Show();
         }
 
         private void triangularWindowToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            double[] triangle = Fourier.triangleWindow(copy);
+            FourierForm f = new FourierForm();
+            f.plotFourier(triangle, globalWavHdr.SampleRate, "Triangle Window");
+            f.Show();
         }
 
         private void generateFilterToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Form dialog = new Form();
-            dialog.Show();
+            FourierForm f = new FourierForm();
+            f.plotFourier(copy, globalWavHdr.SampleRate, "Chill");
+            f.Show();
+        }
+
+        /*Thread freqThread = new Thread(new ThreadStart(threadproc));
+
+        public static void threadproc()
+        {
+            FreqCut f = new FreqCut();
+            f.Show();
+        }*/
+
+        private void lowPassToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FreqCut f = new FreqCut();
+            double[] filter = new double[0];
+            if (f.ShowDialog() == DialogResult.OK)
+            {
+                filter = Fourier.lowPassFilter(copy.Length, freqinput, globalWavHdr.SampleRate);
+                Fourier.printSamplesTrace(filter);
+            }
+            Complex[] fw = Fourier.convertFilter(filter);
+            double[] idftdfw = Fourier.inverseDFT(fw, fw.Length);
+            double[] newsamples = Fourier.convolve(copy, idftdfw);
+            copy = newsamples;
+            FourierForm fou = new FourierForm();
+            fou.plotFourier(newsamples, globalWavHdr.SampleRate, "Low-Pass");
+            fou.Show();
+            double[] megaexperiment = Fourier.convolve(globalFreq, idftdfw);
+            /*var list = globalFreq.ToList();
+            list.RemoveRange((int)xstart, (int)xend - (int)xstart);
+            globalFreq = list.ToArray();
+            plotFreqWaveChart(globalFreq);
+            double[] newfreq = new double[globalFreq.Length + copy.Length];
+            for (int i = 0; i < (int)xstart; i++)
+            {
+                newfreq[i] = globalFreq[i];
+            }
+            for (int i = 0; i < copy.Length; i++)
+            {
+                newfreq[i + (int)xstart] = copy[i];
+            }
+            for (int i = (int)xstart + copy.Length; i < newfreq.Length; i++)
+            {
+                newfreq[i] = globalFreq[i - copy.Length];
+            }*/
+            globalFreq = megaexperiment;
+            plotFreqWaveChart(globalFreq);
+        }
+
+        private void Play_Click(object sender, EventArgs e)
+        {
+            StartMessage();
+        }
+
+        private void highPassToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FreqCut f = new FreqCut();
+            double[] filter = new double[0];
+            if (f.ShowDialog() == DialogResult.OK)
+            {
+                filter = Fourier.highPassFilter(copy.Length, freqinput, globalWavHdr.SampleRate);
+                Fourier.printSamplesTrace(filter);
+            }
+            Complex[] fw = Fourier.convertFilter(filter);
+            double[] idftdfw = Fourier.inverseDFT(fw, fw.Length);
+            double[] newsamples = Fourier.convolve(copy, idftdfw);
+            copy = newsamples;
+            FourierForm fou = new FourierForm();
+            fou.plotFourier(newsamples, globalWavHdr.SampleRate, "High-Pass");
+            fou.Show();
+            double[] megaexperiment = Fourier.convolve(globalFreq, idftdfw);
+            /*var list = globalFreq.ToList();
+            list.RemoveRange((int)xstart, (int)xend - (int)xstart);
+            globalFreq = list.ToArray();
+            plotFreqWaveChart(globalFreq);
+            double[] newfreq = new double[globalFreq.Length + copy.Length];
+            for (int i = 0; i < (int)xstart; i++)
+            {
+                newfreq[i] = globalFreq[i];
+            }
+            for (int i = 0; i < copy.Length; i++)
+            {
+                newfreq[i + (int)xstart] = copy[i];
+            }
+            for (int i = (int)xstart + copy.Length; i < newfreq.Length; i++)
+            {
+                newfreq[i] = globalFreq[i - copy.Length];
+            }*/
+            globalFreq = megaexperiment;
+            plotFreqWaveChart(globalFreq);
+        }
+
+        private void StartPlay_Click(object sender, EventArgs e)
+        {
+            if (!player)
+            {
+                PlayMessage();
+                player = true;
+                Trace.WriteLine("Existing");
+            } else
+            {
+                PlayStopMessage();
+                player = false;
+                Trace.WriteLine("Existn't");
+            }
         }
     }
 }

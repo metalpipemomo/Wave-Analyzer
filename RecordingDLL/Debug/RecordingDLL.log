@@ -1,0 +1,3 @@
+﻿  Record.c
+C:\Users\banga\source\repos\Dennis_Project_Home\RecordingDLL\Record.c(43,76): warning C4047: '==': 'int' differs in levels of indirection from 'HWND'
+  RecordingDLL.vcxproj -> C:\Users\banga\Source\Repos\Dennis_Project_Home\bin\Debug\RecordingDLL.dll

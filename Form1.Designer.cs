@@ -1,5 +1,4 @@
-﻿
-namespace WaveAnalyzer
+﻿namespace WaveAnalyzer
 {
     partial class Form1
     {
@@ -33,38 +32,27 @@ namespace WaveAnalyzer
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.File = new System.Windows.Forms.Button();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.Clear = new System.Windows.Forms.Button();
-            this.Save = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
             this.Copy = new System.Windows.Forms.Button();
             this.Cut = new System.Windows.Forms.Button();
             this.Paste = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.somethingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hannWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.triangularWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.generateFilterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lowPassToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.highPassToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.Play = new System.Windows.Forms.Button();
-            this.Pause = new System.Windows.Forms.Button();
+            this.Record = new System.Windows.Forms.Button();
             this.StartPlay = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
+            this.hScrollBar1 = new System.Windows.Forms.HScrollBar();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // File
-            // 
-            this.File.Location = new System.Drawing.Point(12, 39);
-            this.File.Name = "File";
-            this.File.Size = new System.Drawing.Size(75, 23);
-            this.File.TabIndex = 0;
-            this.File.Text = "File";
-            this.File.UseVisualStyleBackColor = true;
-            this.File.Click += new System.EventHandler(this.File_Click);
             // 
             // chart1
             // 
@@ -85,44 +73,13 @@ namespace WaveAnalyzer
             series1.Name = "Original";
             series1.YValuesPerPoint = 10;
             this.chart1.Series.Add(series1);
-            this.chart1.Size = new System.Drawing.Size(894, 179);
+            this.chart1.Size = new System.Drawing.Size(900, 180);
             this.chart1.TabIndex = 1;
             this.chart1.Click += new System.EventHandler(this.chart1_Click);
             // 
-            // Clear
-            // 
-            this.Clear.Location = new System.Drawing.Point(175, 39);
-            this.Clear.Name = "Clear";
-            this.Clear.Size = new System.Drawing.Size(75, 23);
-            this.Clear.TabIndex = 2;
-            this.Clear.Text = "Clear";
-            this.Clear.UseVisualStyleBackColor = true;
-            this.Clear.Click += new System.EventHandler(this.Clear_Click);
-            // 
-            // Save
-            // 
-            this.Save.Location = new System.Drawing.Point(93, 39);
-            this.Save.Name = "Save";
-            this.Save.Size = new System.Drawing.Size(75, 23);
-            this.Save.TabIndex = 3;
-            this.Save.Text = "Save";
-            this.Save.UseVisualStyleBackColor = true;
-            this.Save.Click += new System.EventHandler(this.Save_Click);
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(835, 255);
-            this.button1.Margin = new System.Windows.Forms.Padding(2);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(71, 21);
-            this.button1.TabIndex = 5;
-            this.button1.Text = "DIE";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
             // Copy
             // 
-            this.Copy.Location = new System.Drawing.Point(93, 253);
+            this.Copy.Location = new System.Drawing.Point(409, 39);
             this.Copy.Name = "Copy";
             this.Copy.Size = new System.Drawing.Size(75, 23);
             this.Copy.TabIndex = 7;
@@ -132,7 +89,7 @@ namespace WaveAnalyzer
             // 
             // Cut
             // 
-            this.Cut.Location = new System.Drawing.Point(12, 253);
+            this.Cut.Location = new System.Drawing.Point(328, 39);
             this.Cut.Name = "Cut";
             this.Cut.Size = new System.Drawing.Size(75, 23);
             this.Cut.TabIndex = 8;
@@ -142,7 +99,7 @@ namespace WaveAnalyzer
             // 
             // Paste
             // 
-            this.Paste.Location = new System.Drawing.Point(175, 253);
+            this.Paste.Location = new System.Drawing.Point(491, 39);
             this.Paste.Name = "Paste";
             this.Paste.Size = new System.Drawing.Size(75, 23);
             this.Paste.TabIndex = 9;
@@ -153,12 +110,44 @@ namespace WaveAnalyzer
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem,
             this.somethingToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(922, 24);
             this.menuStrip1.TabIndex = 10;
             this.menuStrip1.Text = "menuStrip1";
+            // 
+            // fileToolStripMenuItem
+            // 
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.importToolStripMenuItem,
+            this.saveToolStripMenuItem,
+            this.clearToolStripMenuItem});
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Text = "File";
+            // 
+            // importToolStripMenuItem
+            // 
+            this.importToolStripMenuItem.Name = "importToolStripMenuItem";
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.importToolStripMenuItem.Text = "Import";
+            this.importToolStripMenuItem.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
+            // 
+            // saveToolStripMenuItem
+            // 
+            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.saveToolStripMenuItem.Text = "Save";
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+            // 
+            // clearToolStripMenuItem
+            // 
+            this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
+            this.clearToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.clearToolStripMenuItem.Text = "Clear";
+            this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
             // 
             // somethingToolStripMenuItem
             // 
@@ -173,14 +162,14 @@ namespace WaveAnalyzer
             // hannWindowToolStripMenuItem
             // 
             this.hannWindowToolStripMenuItem.Name = "hannWindowToolStripMenuItem";
-            this.hannWindowToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.hannWindowToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.hannWindowToolStripMenuItem.Text = "Hann Window";
             this.hannWindowToolStripMenuItem.Click += new System.EventHandler(this.hannWindowToolStripMenuItem_Click);
             // 
             // triangularWindowToolStripMenuItem
             // 
             this.triangularWindowToolStripMenuItem.Name = "triangularWindowToolStripMenuItem";
-            this.triangularWindowToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.triangularWindowToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.triangularWindowToolStripMenuItem.Text = "Triangular Window";
             this.triangularWindowToolStripMenuItem.Click += new System.EventHandler(this.triangularWindowToolStripMenuItem_Click);
             // 
@@ -190,61 +179,54 @@ namespace WaveAnalyzer
             this.lowPassToolStripMenuItem,
             this.highPassToolStripMenuItem});
             this.generateFilterToolStripMenuItem.Name = "generateFilterToolStripMenuItem";
-            this.generateFilterToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.generateFilterToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.generateFilterToolStripMenuItem.Text = "Generate Filter";
-            this.generateFilterToolStripMenuItem.Click += new System.EventHandler(this.generateFilterToolStripMenuItem_Click);
             // 
             // lowPassToolStripMenuItem
             // 
             this.lowPassToolStripMenuItem.Name = "lowPassToolStripMenuItem";
-            this.lowPassToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.lowPassToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
             this.lowPassToolStripMenuItem.Text = "Low-Pass";
             this.lowPassToolStripMenuItem.Click += new System.EventHandler(this.lowPassToolStripMenuItem_Click);
             // 
             // highPassToolStripMenuItem
             // 
             this.highPassToolStripMenuItem.Name = "highPassToolStripMenuItem";
-            this.highPassToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.highPassToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
             this.highPassToolStripMenuItem.Text = "High-Pass";
             this.highPassToolStripMenuItem.Click += new System.EventHandler(this.highPassToolStripMenuItem_Click);
             // 
-            // Play
+            // Record
             // 
-            this.Play.Location = new System.Drawing.Point(317, 352);
-            this.Play.Name = "Play";
-            this.Play.Size = new System.Drawing.Size(75, 23);
-            this.Play.TabIndex = 11;
-            this.Play.Text = "Play";
-            this.Play.UseVisualStyleBackColor = true;
-            this.Play.Click += new System.EventHandler(this.Play_Click);
-            // 
-            // Pause
-            // 
-            this.Pause.Location = new System.Drawing.Point(409, 352);
-            this.Pause.Name = "Pause";
-            this.Pause.Size = new System.Drawing.Size(75, 23);
-            this.Pause.TabIndex = 12;
-            this.Pause.Text = "Pause";
-            this.Pause.UseVisualStyleBackColor = true;
+            this.Record.Location = new System.Drawing.Point(317, 352);
+            this.Record.Name = "Record";
+            this.Record.Size = new System.Drawing.Size(75, 23);
+            this.Record.TabIndex = 11;
+            this.Record.Text = "Record";
+            this.Record.UseVisualStyleBackColor = true;
+            this.Record.Click += new System.EventHandler(this.Record_Click);
             // 
             // StartPlay
             // 
-            this.StartPlay.Location = new System.Drawing.Point(491, 352);
+            this.StartPlay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.StartPlay.Image = ((System.Drawing.Image)(resources.GetObject("StartPlay.Image")));
+            this.StartPlay.Location = new System.Drawing.Point(525, 342);
             this.StartPlay.Name = "StartPlay";
-            this.StartPlay.Size = new System.Drawing.Size(75, 23);
+            this.StartPlay.Size = new System.Drawing.Size(41, 42);
             this.StartPlay.TabIndex = 13;
-            this.StartPlay.Text = "button2";
+            this.StartPlay.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.StartPlay.UseVisualStyleBackColor = true;
             this.StartPlay.Click += new System.EventHandler(this.StartPlay_Click);
             // 
-            // button3
+            // hScrollBar1
             // 
-            this.button3.Location = new System.Drawing.Point(573, 352);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 14;
-            this.button3.Text = "button3";
-            this.button3.UseVisualStyleBackColor = true;
+            this.hScrollBar1.LargeChange = 2;
+            this.hScrollBar1.Location = new System.Drawing.Point(90, 251);
+            this.hScrollBar1.Maximum = 1;
+            this.hScrollBar1.Name = "hScrollBar1";
+            this.hScrollBar1.Size = new System.Drawing.Size(795, 18);
+            this.hScrollBar1.TabIndex = 14;
+            this.hScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.hScrollBar1_Scroll);
             // 
             // Form1
             // 
@@ -252,24 +234,18 @@ namespace WaveAnalyzer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.SlateGray;
             this.ClientSize = new System.Drawing.Size(922, 539);
-            this.Controls.Add(this.button3);
+            this.Controls.Add(this.hScrollBar1);
             this.Controls.Add(this.StartPlay);
-            this.Controls.Add(this.Pause);
-            this.Controls.Add(this.Play);
+            this.Controls.Add(this.Record);
             this.Controls.Add(this.Paste);
             this.Controls.Add(this.Cut);
             this.Controls.Add(this.Copy);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.Save);
-            this.Controls.Add(this.Clear);
             this.Controls.Add(this.chart1);
-            this.Controls.Add(this.File);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
-            this.Text = "Form1";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Text = "Dave Analyzer";
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -279,12 +255,7 @@ namespace WaveAnalyzer
         }
 
         #endregion
-
-        private System.Windows.Forms.Button File;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
-        private System.Windows.Forms.Button Clear;
-        private System.Windows.Forms.Button Save;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button Copy;
         private System.Windows.Forms.Button Cut;
         private System.Windows.Forms.Button Paste;
@@ -295,10 +266,13 @@ namespace WaveAnalyzer
         private System.Windows.Forms.ToolStripMenuItem generateFilterToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem lowPassToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem highPassToolStripMenuItem;
-        private System.Windows.Forms.Button Play;
-        private System.Windows.Forms.Button Pause;
+        private System.Windows.Forms.Button Record;
         private System.Windows.Forms.Button StartPlay;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.HScrollBar hScrollBar1;
+        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
     }
 }
 

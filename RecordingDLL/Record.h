@@ -6,7 +6,7 @@
 
 EXPORT INT start();
 EXPORT PBYTE getBuffer();
-EXPORT VOID setBuffer(PBYTE, DWORD, WORD, WORD, DWORD, DWORD);
+EXPORT VOID setBuffer(PBYTE, DWORD, int, int, int, int);
 EXPORT DWORD getDwLength();
 EXPORT VOID setDwLength(int);
 EXPORT LRESULT StartMessage();

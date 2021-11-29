@@ -1,19 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using Microsoft.Win32;
-using System.Runtime;
-using System.Threading;
 
 namespace WaveAnalyzer
 {
@@ -21,7 +16,7 @@ namespace WaveAnalyzer
     {
         [DllImport("RecordingDLL.dll")] public static extern int start();
         [DllImport("RecordingDLL.dll")] public static extern IntPtr getBuffer();
-        [DllImport("RecordingDLL.dll", CallingConvention = CallingConvention.Cdecl)] public static extern void setBuffer(byte* newpbuffer, int length, ushort bps, ushort blockalign, uint samplerate, uint byterate);
+        [DllImport("RecordingDLL.dll", CallingConvention = CallingConvention.Cdecl)] public static extern void setBuffer(byte* newpbuffer, int length, int bps, int blockalign, int samplerate, int byterate);
         [DllImport("RecordingDLL.dll")] public static extern int getDwLength();
         [DllImport("RecordingDLL.dll")] public static extern IntPtr StartMessage();
         [DllImport("RecordingDLL.dll")] public static extern IntPtr StopMessage();
@@ -40,9 +35,10 @@ namespace WaveAnalyzer
         public Form1()
         {
             InitializeComponent();
-            this.Text = "Mo's Wave Analyzer";
+            start();
             chartStyling();
             buttonStyling();
+            Testing();
             
         }
 
@@ -53,8 +49,7 @@ namespace WaveAnalyzer
             cs.ChartType = SeriesChartType.FastLine;
             ca.AxisX.Minimum = 0;
             ca.AxisX.Maximum = Double.NaN;
-            ca.AxisX.ScrollBar.Enabled = true;
-            ca.AxisX.ScrollBar.ButtonStyle = ScrollBarButtonStyles.SmallScroll;
+            ca.AxisX.ScrollBar.Enabled = false;
             ca.AxisX.ScaleView.Zoomable = false;
             ca.CursorX.IsUserEnabled = true;
             ca.CursorX.IsUserSelectionEnabled = true;
@@ -65,6 +60,7 @@ namespace WaveAnalyzer
             ca.AxisX.MajorGrid.Enabled = false;
             ca.AxisY.MajorGrid.Enabled = false;
             this.chart1.MouseWheel += chart1_MouseWheel;
+            hScrollBar1.Visible = false;
         }
 
         private void buttonStyling()
@@ -72,8 +68,13 @@ namespace WaveAnalyzer
             Cut.Enabled = false;
             Copy.Enabled = false;
             Paste.Enabled = false;
-            Clear.Enabled = false;
-            Save.Enabled = false;
+            clearToolStripMenuItem.Enabled = false;
+            saveToolStripMenuItem.Enabled = false;
+            hannWindowToolStripMenuItem.Enabled = false;
+            triangularWindowToolStripMenuItem.Enabled = false;
+            generateFilterToolStripMenuItem.Enabled = false;
+            somethingToolStripMenuItem.Enabled = false;
+            StartPlay.Enabled = false;
         }
 
         public double[] readingWave(String fileName)
@@ -98,7 +99,7 @@ namespace WaveAnalyzer
             data = byteArray;
             fixed (byte* ptr = byteArray)
             {
-                setBuffer(ptr, byteArray.Length, globalWavHdr.BitsPerSample, globalWavHdr.BlockAlign, globalWavHdr.SampleRate, globalWavHdr.ByteRate);
+                setBuffer(ptr, byteArray.Length, globalWavHdr.BitsPerSample, globalWavHdr.BlockAlign, (int)globalWavHdr.SampleRate, (int)globalWavHdr.ByteRate);
             }
             short[] shortArray = new short[globalWavHdr.SubChunk2Size / globalWavHdr.BlockAlign];
             double[] outputArray;
@@ -107,6 +108,8 @@ namespace WaveAnalyzer
                 shortArray[i] = BitConverter.ToInt16(byteArray, i * globalWavHdr.BlockAlign);
             }
             outputArray = shortArray.Select(x => (double)(x)).ToArray();
+            hScrollBar1.Maximum = outputArray.Length - (outputArray.Length / 25);
+            Trace.WriteLine(outputArray.Length);
             reader.Close();
             return outputArray;
         }
@@ -114,7 +117,6 @@ namespace WaveAnalyzer
         public void OpenFile(string fileName)
         {
             filePath = fileName;
-            //Text = fileName;
             globalFreq = readingWave(filePath);
             plotFreqWaveChart(globalFreq);
         }
@@ -126,7 +128,7 @@ namespace WaveAnalyzer
             {
                 chart1.Series["Original"].Points.AddXY(i, array[i]);
             }
-            for (int i = array.Length / 4; i < array.Length - array.Length / 2 ; i++)
+            for (int i = array.Length / 4; i < array.Length - array.Length / 2; i++)
             {
                 chart1.Series["Original"].Points.AddXY(i, array[i]);
             }
@@ -138,26 +140,34 @@ namespace WaveAnalyzer
             {
                 chart1.Series["Original"].Points.AddXY(i, array[i]);
             }
+            /**
+             * store scroll start
+             * store scroll end (the size of your scaleview + start)
+             * set an index (?)
+             * from scroll start, while its less than scroll end and less than wave length, increment
+             * do:
+             * add xy index, and data at index
+             * increment index
+             */
+            /*int start = hScrollBar1.Value;
+            int end = (int) chart1.ChartAreas[0].AxisX.ScaleView.Size + start;
+            int index = 0;
+            for (int i = start; i < end && i < globalFreq.Length; ++i)
+            {
+                chart1.Series[0].Points.AddXY(index, globalFreq[i]);
+                ++index;
+            }*/
             chart1.ChartAreas[0].AxisX.ScaleView.Size = array.Length / 25;
-            Clear.Enabled = true;
-            Save.Enabled = true;
+            clearToolStripMenuItem.Enabled = true;
+            saveToolStripMenuItem.Enabled = true;
+            hannWindowToolStripMenuItem.Enabled = true;
+            triangularWindowToolStripMenuItem.Enabled = true;
+            generateFilterToolStripMenuItem.Enabled = true;
+            somethingToolStripMenuItem.Enabled = true;
+            hScrollBar1.Visible = true;
+            StartPlay.Enabled = true;
             Cut.Enabled = true;
             Copy.Enabled = true;
-        }
-
-        private void File_Click(object sender, EventArgs e)
-        {
-            
-            //Basically the menu where you select files
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            //add filter
-            openFileDialog.Filter = "WAV File (*.wav)|*.wav|All files (*.*)|*.*";
-            //check if file open
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                OpenFile(openFileDialog.FileName);
-            }
-            
         }
 
         private void chart1_Click(object sender, EventArgs e)
@@ -165,37 +175,6 @@ namespace WaveAnalyzer
             xstart = chart1.ChartAreas[0].CursorX.SelectionStart;
             xend = chart1.ChartAreas[0].CursorX.SelectionEnd;
             Trace.WriteLine(xstart + "\n" + xend);
-        }
-
-        private void Clear_Click(object sender, EventArgs e)
-        {
-            chart1.Series["Original"].Points.Clear();
-            buttonStyling();
-        }
-
-        private void Save_Click(object sender, EventArgs e)
-        {
-            FileStream fs = new FileStream("C:\\Users\\banga\\Downloads\\Written.wav", FileMode.CreateNew);
-            BinaryWriter writer = new BinaryWriter(fs);
-            writer.Write(globalWavHdr.ChunkID); //RIFF
-            writer.Write(globalWavHdr.ChunkSize); //File Size (integer)
-            writer.Write(globalWavHdr.Format); //WAVE
-            writer.Write(globalWavHdr.SubChunk1ID);//fmt
-            writer.Write(globalWavHdr.SubChunk1Size); //length of above data
-            writer.Write(globalWavHdr.AudioFormat); //PCM
-            writer.Write(globalWavHdr.NumChannels); //Channel numbers
-            writer.Write(globalWavHdr.SampleRate); //Sample rate
-            writer.Write(globalWavHdr.ByteRate); //Byte rate
-            writer.Write(globalWavHdr.BlockAlign);
-            writer.Write(globalWavHdr.BitsPerSample);
-            writer.Write(globalWavHdr.SubChunk2ID);
-            writer.Write(globalWavHdr.SubChunk2Size);
-            writer.Write(data);
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            start();
         }
 
         private void Copy_Click(object sender, EventArgs e)
@@ -239,12 +218,6 @@ namespace WaveAnalyzer
             plotFreqWaveChart(globalFreq);
         }
 
-
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
         private class ZoomFrame
         {
             public double XStart { get; set; }
@@ -309,7 +282,10 @@ namespace WaveAnalyzer
         {
             double[] hann = Fourier.hannWindow(copy);
             FourierForm f = new FourierForm();
-            f.plotFourier(hann, globalWavHdr.SampleRate, "Hann Window");
+            Thread t = new Thread(() => f.doFourier(hann));
+            t.Start();
+            t.Join();
+            f.plotFourier(globalWavHdr.SampleRate, "Hann Window");
             f.Show();
         }
 
@@ -317,66 +293,43 @@ namespace WaveAnalyzer
         {
             double[] triangle = Fourier.triangleWindow(copy);
             FourierForm f = new FourierForm();
-            f.plotFourier(triangle, globalWavHdr.SampleRate, "Triangle Window");
+            Thread t = new Thread(() => f.doFourier(triangle));
+            t.Start();
+            t.Join();
+            f.plotFourier(globalWavHdr.SampleRate, "Triangle Window");
             f.Show();
         }
-
-        private void generateFilterToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            FourierForm f = new FourierForm();
-            f.plotFourier(copy, globalWavHdr.SampleRate, "Chill");
-            f.Show();
-        }
-
-        /*Thread freqThread = new Thread(new ThreadStart(threadproc));
-
-        public static void threadproc()
-        {
-            FreqCut f = new FreqCut();
-            f.Show();
-        }*/
 
         private void lowPassToolStripMenuItem_Click(object sender, EventArgs e)
         {
             FreqCut f = new FreqCut();
-            double[] filter = new double[0];
+            double[] filter = new double[copy.Length];
             if (f.ShowDialog() == DialogResult.OK)
             {
                 filter = Fourier.lowPassFilter(copy.Length, freqinput, globalWavHdr.SampleRate);
                 Fourier.printSamplesTrace(filter);
+            } else
+            {
+                return;
             }
             Complex[] fw = Fourier.convertFilter(filter);
             double[] idftdfw = Fourier.inverseDFT(fw, fw.Length);
             double[] newsamples = Fourier.convolve(copy, idftdfw);
             copy = newsamples;
             FourierForm fou = new FourierForm();
-            fou.plotFourier(newsamples, globalWavHdr.SampleRate, "Low-Pass");
+            Thread t = new Thread(() => fou.doFourier(newsamples));
+            t.Start();
+            t.Join();
+            fou.plotFourier(globalWavHdr.SampleRate, "Low-Pass");
             fou.Show();
             double[] megaexperiment = Fourier.convolve(globalFreq, idftdfw);
-            /*var list = globalFreq.ToList();
-            list.RemoveRange((int)xstart, (int)xend - (int)xstart);
-            globalFreq = list.ToArray();
-            plotFreqWaveChart(globalFreq);
-            double[] newfreq = new double[globalFreq.Length + copy.Length];
-            for (int i = 0; i < (int)xstart; i++)
-            {
-                newfreq[i] = globalFreq[i];
-            }
-            for (int i = 0; i < copy.Length; i++)
-            {
-                newfreq[i + (int)xstart] = copy[i];
-            }
-            for (int i = (int)xstart + copy.Length; i < newfreq.Length; i++)
-            {
-                newfreq[i] = globalFreq[i - copy.Length];
-            }*/
             globalFreq = megaexperiment;
             plotFreqWaveChart(globalFreq);
-        }
-
-        private void Play_Click(object sender, EventArgs e)
-        {
-            StartMessage();
+            data = convertToByte(globalFreq);
+            fixed (byte* ptr = data)
+            {
+                setBuffer(ptr, data.Length, globalWavHdr.BitsPerSample, globalWavHdr.BlockAlign, (int)globalWavHdr.SampleRate, (int)globalWavHdr.ByteRate);
+            }
         }
 
         private void highPassToolStripMenuItem_Click(object sender, EventArgs e)
@@ -393,28 +346,51 @@ namespace WaveAnalyzer
             double[] newsamples = Fourier.convolve(copy, idftdfw);
             copy = newsamples;
             FourierForm fou = new FourierForm();
-            fou.plotFourier(newsamples, globalWavHdr.SampleRate, "High-Pass");
+            Thread t = new Thread(() => fou.doFourier(newsamples));
+            t.Start();
+            t.Join();
+            fou.plotFourier(globalWavHdr.SampleRate, "High-Pass");
             fou.Show();
             double[] megaexperiment = Fourier.convolve(globalFreq, idftdfw);
-            /*var list = globalFreq.ToList();
-            list.RemoveRange((int)xstart, (int)xend - (int)xstart);
-            globalFreq = list.ToArray();
-            plotFreqWaveChart(globalFreq);
-            double[] newfreq = new double[globalFreq.Length + copy.Length];
-            for (int i = 0; i < (int)xstart; i++)
-            {
-                newfreq[i] = globalFreq[i];
-            }
-            for (int i = 0; i < copy.Length; i++)
-            {
-                newfreq[i + (int)xstart] = copy[i];
-            }
-            for (int i = (int)xstart + copy.Length; i < newfreq.Length; i++)
-            {
-                newfreq[i] = globalFreq[i - copy.Length];
-            }*/
             globalFreq = megaexperiment;
             plotFreqWaveChart(globalFreq);
+            data = convertToByte(globalFreq);
+            fixed (byte* ptr = data)
+            {
+                setBuffer(ptr, data.Length, globalWavHdr.BitsPerSample, globalWavHdr.BlockAlign, (int)globalWavHdr.SampleRate, (int)globalWavHdr.ByteRate);
+            }
+        }
+
+        private void Record_Click(object sender, EventArgs e)
+        {
+            if (!player)
+            {
+                StartMessage();
+                player = true;
+            } else
+            {
+                StopMessage();
+                player = false;
+                data = new byte[getDwLength()];
+                Marshal.Copy(getBuffer(), data, 0, getDwLength());
+                short[] shortArray = new short[data.Length / 2];
+                double[] outputArray;
+                for (int i = 0; i < data.Length / 2; i++)
+                {
+                    shortArray[i] = BitConverter.ToInt16(data, i * 2);
+                }
+                globalFreq = shortArray.Select(x => (double)(x)).ToArray();
+                plotFreqWaveChart(globalFreq);
+                fixed (byte* ptr = data)
+                {
+                    setBuffer(ptr, data.Length, 16, 2, 44100, 88200);
+                }
+                globalWavHdr.BlockAlign = 2;
+                globalWavHdr.BitsPerSample = 16;
+                globalWavHdr.SampleRate = 44100;
+                globalWavHdr.ByteRate = 88200;
+                StartPlay.Enabled = true;
+            }
         }
 
         private void StartPlay_Click(object sender, EventArgs e)
@@ -430,6 +406,67 @@ namespace WaveAnalyzer
                 player = false;
                 Trace.WriteLine("Existn't");
             }
+        }
+
+        public byte[] convertToByte(double[] s)
+        {
+            short[] news = new short[s.Length];
+            news = s.Select(x => (short)(x)).ToArray();
+            List<Byte> b = new List<byte>();
+            for (int i = 0; i < news.Length; ++i)
+            {
+                b.AddRange(BitConverter.GetBytes(news[i]).ToList());
+            }
+            return b.ToArray();
+        }
+
+        private void importToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //Basically the menu where you select files
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            //add filter
+            openFileDialog.Filter = "WAV File (*.wav)|*.wav|All files (*.*)|*.*";
+            //check if file open
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                OpenFile(openFileDialog.FileName);
+            }
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Random rand = new Random();
+            FileStream fs = new FileStream("C:\\Users\\banga\\Downloads\\Written" + rand.Next() + ".wav", FileMode.CreateNew);
+            BinaryWriter writer = new BinaryWriter(fs);
+            writer.Write(globalWavHdr.ChunkID); //RIFF
+            writer.Write(globalWavHdr.ChunkSize); //File Size (integer)
+            writer.Write(globalWavHdr.Format); //WAVE
+            writer.Write(globalWavHdr.SubChunk1ID);//fmt
+            writer.Write(globalWavHdr.SubChunk1Size); //length of above data
+            writer.Write(globalWavHdr.AudioFormat); //PCM
+            writer.Write(globalWavHdr.NumChannels); //Channel numbers
+            writer.Write(globalWavHdr.SampleRate); //Sample rate
+            writer.Write(globalWavHdr.ByteRate); //Byte rate
+            writer.Write(globalWavHdr.BlockAlign);
+            writer.Write(globalWavHdr.BitsPerSample);
+            writer.Write(globalWavHdr.SubChunk2ID);
+            writer.Write(globalWavHdr.SubChunk2Size);
+            writer.Write(data);
+        }
+
+        private void clearToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            chart1.Series["Original"].Points.Clear();
+            buttonStyling();
+        }
+
+        private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
+        {
+            //if scaleview size + scrollvalue < wavelength
+            /*if (chart1.ChartAreas[0].AxisX.ScaleView.Size + hScrollBar1.Value < globalFreq.Length)
+            {
+                plotFreqWaveChart(globalFreq);
+            }*/
         }
     }
 }

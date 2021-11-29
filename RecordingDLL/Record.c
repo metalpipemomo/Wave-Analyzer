@@ -61,7 +61,7 @@ EXPORT VOID setDwLength(int newLength) {
     dwDataLength = newLength;
 }
 
-EXPORT VOID setBuffer(PBYTE currentBuffer, DWORD length, WORD bps, WORD ba, DWORD sr, DWORD br) {
+EXPORT VOID setBuffer(PBYTE currentBuffer, DWORD length, int bps, int ba, int sr, int br) {
     dwDataLength = length;
     bitsPerSample = bps;
     blockAlign = ba;
@@ -286,15 +286,6 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
         pSaveBuffer = realloc(pSaveBuffer, 1);
 
         // Enable and disable Buttons
-
-        EnableWindow(GetDlgItem(hwnd, IDC_RECORD_BEG), FALSE);
-        EnableWindow(GetDlgItem(hwnd, IDC_RECORD_END), TRUE);
-        EnableWindow(GetDlgItem(hwnd, IDC_PLAY_BEG), FALSE);
-        EnableWindow(GetDlgItem(hwnd, IDC_PLAY_PAUSE), FALSE);
-        EnableWindow(GetDlgItem(hwnd, IDC_PLAY_END), FALSE);
-        EnableWindow(GetDlgItem(hwnd, IDC_PLAY_REV), FALSE);
-        EnableWindow(GetDlgItem(hwnd, IDC_PLAY_REP), FALSE);
-        EnableWindow(GetDlgItem(hwnd, IDC_PLAY_SPEED), FALSE);
         SetFocus(GetDlgItem(hwnd, IDC_RECORD_END));
 
         // Add the buffers
@@ -354,18 +345,10 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         // Enable and disable buttons
 
-        EnableWindow(GetDlgItem(hwnd, IDC_RECORD_BEG), TRUE);
-        EnableWindow(GetDlgItem(hwnd, IDC_RECORD_END), FALSE);
         SetFocus(GetDlgItem(hwnd, IDC_RECORD_BEG));
 
         if (dwDataLength > 0)
         {
-            EnableWindow(GetDlgItem(hwnd, IDC_PLAY_BEG), TRUE);
-            EnableWindow(GetDlgItem(hwnd, IDC_PLAY_PAUSE), FALSE);
-            EnableWindow(GetDlgItem(hwnd, IDC_PLAY_END), FALSE);
-            EnableWindow(GetDlgItem(hwnd, IDC_PLAY_REP), TRUE);
-            EnableWindow(GetDlgItem(hwnd, IDC_PLAY_REV), TRUE);
-            EnableWindow(GetDlgItem(hwnd, IDC_PLAY_SPEED), TRUE);
             SetFocus(GetDlgItem(hwnd, IDC_PLAY_BEG));
         }
         bRecording = FALSE;
@@ -378,14 +361,6 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     case MM_WOM_OPEN:
         // Enable and disable buttons
 
-        EnableWindow(GetDlgItem(hwnd, IDC_RECORD_BEG), FALSE);
-        EnableWindow(GetDlgItem(hwnd, IDC_RECORD_END), FALSE);
-        EnableWindow(GetDlgItem(hwnd, IDC_PLAY_BEG), FALSE);
-        EnableWindow(GetDlgItem(hwnd, IDC_PLAY_PAUSE), TRUE);
-        EnableWindow(GetDlgItem(hwnd, IDC_PLAY_END), TRUE);
-        EnableWindow(GetDlgItem(hwnd, IDC_PLAY_REP), FALSE);
-        EnableWindow(GetDlgItem(hwnd, IDC_PLAY_REV), FALSE);
-        EnableWindow(GetDlgItem(hwnd, IDC_PLAY_SPEED), FALSE);
         SetFocus(GetDlgItem(hwnd, IDC_PLAY_END));
 
         // Set up header
@@ -416,14 +391,6 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     case MM_WOM_CLOSE:
         // Enable and disable buttons
 
-        EnableWindow(GetDlgItem(hwnd, IDC_RECORD_BEG), TRUE);
-        EnableWindow(GetDlgItem(hwnd, IDC_RECORD_END), TRUE);
-        EnableWindow(GetDlgItem(hwnd, IDC_PLAY_BEG), TRUE);
-        EnableWindow(GetDlgItem(hwnd, IDC_PLAY_PAUSE), FALSE);
-        EnableWindow(GetDlgItem(hwnd, IDC_PLAY_END), FALSE);
-        EnableWindow(GetDlgItem(hwnd, IDC_PLAY_REV), TRUE);
-        EnableWindow(GetDlgItem(hwnd, IDC_PLAY_REP), TRUE);
-        EnableWindow(GetDlgItem(hwnd, IDC_PLAY_SPEED), TRUE);
         SetFocus(GetDlgItem(hwnd, IDC_PLAY_BEG));
 
         SetDlgItemText(hwnd, IDC_PLAY_PAUSE, TEXT("Pause"));

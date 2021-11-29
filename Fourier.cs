@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Diagnostics;
 
 namespace WaveAnalyzer
@@ -85,10 +82,6 @@ namespace WaveAnalyzer
             {
                 lowpass[i] = 1;
             }
-            for (int i = bin + 1; i < N - bin; i++)
-            {
-                lowpass[i] = 0;
-            }
             for (int i = N - bin; i < N; i++)
             {
                 lowpass[i] = 1;
@@ -102,17 +95,9 @@ namespace WaveAnalyzer
             double[] highpass = new double[N];
             highpass[0] = 1;
             int bin = (int) Math.Ceiling((fcut * N) / samplerate);
-            for (int i = 1; i < bin + 1; i++)
-            {
-                highpass[i] = 0;
-            }
-            for (int i = bin + 1; i < N - bin; i++)
+            for (int i = bin; i < N - bin + 1; i++)
             {
                 highpass[i] = 1;
-            }
-            for (int i = N - bin; i < N; i++)
-            {
-                highpass[i] = 0;
             }
             return highpass;
         }

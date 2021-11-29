@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Threading;
 
 namespace WaveAnalyzer
 {
     public partial class FourierForm : Form
     {
+        private Complex[] changedWave;
         public FourierForm()
         {
             InitializeComponent();
@@ -33,10 +28,12 @@ namespace WaveAnalyzer
             ca.AxisX.Maximum = Double.NaN;
         }
 
-        public void plotFourier(double[] samples, double samplerate, string name)
+
+        public void plotFourier(double samplerate, string name)
         {
             this.Text = name;
-            Complex[] f = Fourier.DFT(samples, samples.Length);
+            
+            Complex[] f = changedWave;
             double[] freqs = Fourier.getFrequency(f, samplerate);
             double[] amps = Fourier.getAmplitudes(f);
             Trace.WriteLine(f.Length + " " + freqs.Length + " " + amps.Length);
@@ -44,6 +41,11 @@ namespace WaveAnalyzer
             {
                 FourierChart.Series[0].Points.AddXY(freqs[i], amps[i]);
             }
+        }
+
+        public void doFourier(double[] samples)
+        {
+            changedWave = Fourier.DFT(samples, samples.Length);
         }
 
         private void FourierChart_Click(object sender, EventArgs e)

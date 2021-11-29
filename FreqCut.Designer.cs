@@ -1,5 +1,4 @@
-﻿
-namespace WaveAnalyzer
+﻿namespace WaveAnalyzer
 {
     partial class FreqCut
     {

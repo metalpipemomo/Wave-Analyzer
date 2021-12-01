@@ -8,7 +8,7 @@ namespace WaveAnalyzer
 {
     class Constants
     {
-        public const int VIEWABLE = 800;
+        public const int VIEWABLE = 5000;
         public const int RIFF = 1179011410;
         public const int WAVE = 1163280727;
         public const int fmt = 544501094;

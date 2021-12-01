@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
@@ -23,7 +24,6 @@ namespace WaveAnalyzer
         [DllImport("RecordingDLL.dll")] public static extern IntPtr StopMessage();
         [DllImport("RecordingDLL.dll")] public static extern IntPtr PlayMessage();
         [DllImport("RecordingDLL.dll")] public static extern IntPtr PlayStopMessage();
-
         private string filePath;
         private string fileName;
         private double[] globalFreq;
@@ -51,7 +51,7 @@ namespace WaveAnalyzer
             using (LinearGradientBrush brush = new LinearGradientBrush(this.ClientRectangle,
                                                                        Color.FromArgb(255, 128, 0),
                                                                        Color.FromArgb(255, 51, 255),
-                                                                       0F))
+                                                                       45F))
             {
                 e.Graphics.FillRectangle(brush, this.ClientRectangle);
             }
@@ -189,10 +189,20 @@ namespace WaveAnalyzer
             }
             short[] shortArray = new short[globalWavHdr.SubChunk2Size / globalWavHdr.BlockAlign];
             double[] outputArray;
-            for (int i = 0; i < globalWavHdr.SubChunk2Size / globalWavHdr.BlockAlign - 1; i++)
+            if (globalWavHdr.BitsPerSample < 16)
             {
-                shortArray[i] = BitConverter.ToInt16(byteArray, i * globalWavHdr.BlockAlign);
+                for (int i = 0; i < globalWavHdr.SubChunk2Size / globalWavHdr.BlockAlign - 1; i++) {
+                    shortArray[i] = (short)byteArray[i];
+                }
             }
+            else
+            {
+                for (int i = 0; i < globalWavHdr.SubChunk2Size / globalWavHdr.BlockAlign - 1; i++)
+                {
+                    shortArray[i] = BitConverter.ToInt16(byteArray, i * globalWavHdr.BlockAlign);
+                }
+            }
+            
             outputArray = shortArray.Select(x => (double)(x)).ToArray();
             hScrollBar1.Maximum = outputArray.Length - Constants.VIEWABLE;
             Trace.WriteLine(outputArray.Length);
@@ -243,6 +253,11 @@ namespace WaveAnalyzer
 
         private void Copy_Click(object sender, EventArgs e)
         {
+            if (xstart > xend) {
+                int temp = (int)xend;
+                xend = xstart;
+                xstart = temp;
+            }
             copy = new double[(int)xend - (int)xstart + 1];
             int nums = 0;
             for (int i = (int)xstart; i <= (int)xend; i++)
@@ -365,11 +380,16 @@ namespace WaveAnalyzer
             double[] newsamples = Fourier.convolve(copy, idftdfw);
             copy = newsamples;
             FourierForm fou = new FourierForm();
-            Thread t = new Thread(() => fou.doFourier(newsamples));
-            t.Start();
-            t.Join();
+            FourierForm normal = new FourierForm();
+            fou.whichfourier = 1;
+            normal.whichfourier = 1;
+            Task t = Task.Factory.StartNew(() => fou.doFourier(newsamples));
+            Task t1 = Task.Factory.StartNew(() => normal.doFourier(copy));
+            Task.WaitAll(t, t1);
             fou.plotFourier(globalWavHdr.SampleRate, "Low-Pass");
+            normal.plotFourier(globalWavHdr.SampleRate, "Before Low-Pass DFT");
             fou.Show();
+            normal.Show();
             double[] megaexperiment = Fourier.convolve(globalFreq, idftdfw);
             globalFreq = megaexperiment;
             plotFreqWaveChart(globalFreq);
@@ -394,11 +414,16 @@ namespace WaveAnalyzer
             double[] newsamples = Fourier.convolve(copy, idftdfw);
             copy = newsamples;
             FourierForm fou = new FourierForm();
-            Thread t = new Thread(() => fou.doFourier(newsamples));
-            t.Start();
-            t.Join();
+            fou.whichfourier = 1;
+            FourierForm normal = new FourierForm();
+            normal.whichfourier = 1;
+            Task t = Task.Factory.StartNew(() => fou.doFourier(newsamples));
+            Task t1 = Task.Factory.StartNew(() => normal.doFourier(copy));
+            Task.WaitAll(t, t1);
             fou.plotFourier(globalWavHdr.SampleRate, "High-Pass");
+            normal.plotFourier(globalWavHdr.SampleRate, "Before High-Pass DFT");
             fou.Show();
+            normal.Show();
             double[] megaexperiment = Fourier.convolve(globalFreq, idftdfw);
             globalFreq = megaexperiment;
             plotFreqWaveChart(globalFreq);
@@ -568,20 +593,106 @@ namespace WaveAnalyzer
             FourierForm f1 = new FourierForm();
             double[] samples = copy;
             FourierForm f2 = new FourierForm();
-            Thread t = new Thread(() => f.doFourier(hann));
-            Thread t1 = new Thread(() => f1.doFourier(triangle));
-            Thread t2 = new Thread(() => f2.doFourier(samples));
+            f.whichfourier = 1;
+            f1.whichfourier = 1;
+            f2.whichfourier = 1;
             watch1.Start();
-            t.Start();
+            Task t = Task.Factory.StartNew(() => f.doFourier(hann));
             watch2.Start();
-            t1.Start();
+            Task t1 = Task.Factory.StartNew(() => f1.doFourier(triangle));
             watch3.Start();
-            t2.Start();
-            t.Join();
+            Task t2 = Task.Factory.StartNew(() => f2.doFourier(samples));
+            Task.WaitAll(t, t1, t2);
             watch1.Stop();
-            t1.Join();
             watch2.Stop();
-            t2.Join();
+            watch3.Stop();
+            f.timelapsed = watch1.ElapsedMilliseconds;
+            f1.timelapsed = watch2.ElapsedMilliseconds;
+            f2.timelapsed = watch3.ElapsedMilliseconds;
+            f.plotFourier(globalWavHdr.SampleRate, "Hann Window Threaded");
+            f.Show();
+            f1.plotFourier(globalWavHdr.SampleRate, "Triangle Window Threaded");
+            f1.Show();
+            f2.plotFourier(globalWavHdr.SampleRate, "DFT Threaded");
+            f2.Show();
+        }
+
+        public void MakePlainDFT()
+        {
+            Stopwatch watch = new Stopwatch();
+            double[] samples = copy;
+            FourierForm f = new FourierForm();
+            f.whichfourier = 1;
+            Thread t = new Thread(() => f.doFourier(samples));
+            watch.Start();
+            t.Start();
+            t.Join();
+            watch.Stop();
+            f.timelapsed = watch.ElapsedMilliseconds;
+            f.plotFourier(globalWavHdr.SampleRate, "DFT Threaded");
+            f.Show();
+        }
+
+        public void MakeHann()
+        {
+            Stopwatch watch = new Stopwatch();
+            double[] hann = Fourier.hannWindow(copy);
+            FourierForm f = new FourierForm();
+            f.whichfourier = 1;
+            Thread t = new Thread(() => f.doFourier(hann));
+            watch.Start();
+            t.Start();
+            t.Join();
+            watch.Stop();
+            f.timelapsed = watch.ElapsedMilliseconds;
+            f.plotFourier(globalWavHdr.SampleRate, "Hann Window Threaded");
+            f.Show();
+        }
+
+        public void MakeTriangle()
+        {
+            Stopwatch watch = new Stopwatch();
+            double[] triangle = Fourier.triangleWindow(copy);
+            FourierForm f = new FourierForm();
+            f.whichfourier = 1;
+            Thread t = new Thread(() => f.doFourier(triangle));
+            watch.Start();
+            t.Start();
+            t.Join();
+            watch.Stop();
+            f.timelapsed = watch.ElapsedMilliseconds;
+            f.plotFourier(globalWavHdr.SampleRate, "Triangle Window Threaded");
+            f.Show();
+        }
+
+        private void fileDetailsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            InfoForm f = new InfoForm(filePath, globalWavHdr);
+            f.Show();
+        }
+
+        private void nonThreadedAllToolStripMenuItem_Click(object sender, EventArgs e) {
+            Stopwatch watch1 = new Stopwatch();
+            Stopwatch watch2 = new Stopwatch();
+            Stopwatch watch3 = new Stopwatch();
+            double[] hann = Fourier.hannWindow(copy);
+            FourierForm f = new FourierForm();
+            double[] triangle = Fourier.triangleWindow(copy);
+            FourierForm f1 = new FourierForm();
+            double[] samples = copy;
+            FourierForm f2 = new FourierForm();
+            f.whichfourier = 2;
+            f1.whichfourier = 2;
+            f2.whichfourier = 2;
+            watch1.Start();
+            Task t = Task.Factory.StartNew(() => f.doFourier(hann));
+            watch2.Start();
+            Task t1 = Task.Factory.StartNew(() => f1.doFourier(triangle));
+            watch3.Start();
+            Task t2 = Task.Factory.StartNew(() => f2.doFourier(samples));
+            Task.WaitAll(t, t1, t2);
+            watch1.Stop();
+            watch2.Stop();
             watch3.Stop();
             f.timelapsed = watch1.ElapsedMilliseconds;
             f1.timelapsed = watch2.ElapsedMilliseconds;
@@ -593,56 +704,6 @@ namespace WaveAnalyzer
             f2.plotFourier(globalWavHdr.SampleRate, "DFT");
             f2.Show();
         }
-
-        public void MakePlainDFT()
-        {
-            Stopwatch watch = new Stopwatch();
-            double[] samples = copy;
-            FourierForm f = new FourierForm();
-            Thread t = new Thread(() => f.doFourier(samples));
-            watch.Start();
-            t.Start();
-            t.Join();
-            watch.Stop();
-            f.timelapsed = watch.ElapsedMilliseconds;
-            f.plotFourier(globalWavHdr.SampleRate, "DFT");
-            f.Show();
-        }
-
-        public void MakeHann()
-        {
-            Stopwatch watch = new Stopwatch();
-            double[] hann = Fourier.hannWindow(copy);
-            FourierForm f = new FourierForm();
-            Thread t = new Thread(() => f.doFourier(hann));
-            watch.Start();
-            t.Start();
-            t.Join();
-            watch.Stop();
-            f.timelapsed = watch.ElapsedMilliseconds;
-            f.plotFourier(globalWavHdr.SampleRate, "Hann Window");
-            f.Show();
-        }
-
-        public void MakeTriangle()
-        {
-            Stopwatch watch = new Stopwatch();
-            double[] triangle = Fourier.triangleWindow(copy);
-            FourierForm f = new FourierForm();
-            Thread t = new Thread(() => f.doFourier(triangle));
-            watch.Start();
-            t.Start();
-            t.Join();
-            watch.Stop();
-            f.timelapsed = watch.ElapsedMilliseconds;
-            f.plotFourier(globalWavHdr.SampleRate, "Triangle Window");
-            f.Show();
-        }
-
-        private void fileDetailsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            InfoForm f = new InfoForm(filePath, globalWavHdr);
-            f.Show();
-        }
     }
+
 }

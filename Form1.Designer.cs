@@ -41,6 +41,7 @@
             this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fileDetailsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.somethingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.windowsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.plainDFTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -53,7 +54,7 @@
             this.hScrollBar1 = new System.Windows.Forms.HScrollBar();
             this.StartPlay = new System.Windows.Forms.Button();
             this.Record = new System.Windows.Forms.Button();
-            this.fileDetailsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.nonThreadedAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -160,6 +161,13 @@
             this.clearToolStripMenuItem.Text = "Clear";
             this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
             // 
+            // fileDetailsToolStripMenuItem
+            // 
+            this.fileDetailsToolStripMenuItem.Name = "fileDetailsToolStripMenuItem";
+            this.fileDetailsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.fileDetailsToolStripMenuItem.Text = "File Details";
+            this.fileDetailsToolStripMenuItem.Click += new System.EventHandler(this.fileDetailsToolStripMenuItem_Click);
+            // 
             // somethingToolStripMenuItem
             // 
             this.somethingToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -175,36 +183,37 @@
             this.plainDFTToolStripMenuItem,
             this.hannWindowToolStripMenuItem1,
             this.triangularWindowToolStripMenuItem1,
-            this.allToolStripMenuItem});
+            this.allToolStripMenuItem,
+            this.nonThreadedAllToolStripMenuItem});
             this.windowsToolStripMenuItem.Name = "windowsToolStripMenuItem";
-            this.windowsToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.windowsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.windowsToolStripMenuItem.Text = "Windows";
             // 
             // plainDFTToolStripMenuItem
             // 
             this.plainDFTToolStripMenuItem.Name = "plainDFTToolStripMenuItem";
-            this.plainDFTToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.plainDFTToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.plainDFTToolStripMenuItem.Text = "Plain DFT";
             this.plainDFTToolStripMenuItem.Click += new System.EventHandler(this.plainDFTToolStripMenuItem_Click);
             // 
             // hannWindowToolStripMenuItem1
             // 
             this.hannWindowToolStripMenuItem1.Name = "hannWindowToolStripMenuItem1";
-            this.hannWindowToolStripMenuItem1.Size = new System.Drawing.Size(173, 22);
+            this.hannWindowToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.hannWindowToolStripMenuItem1.Text = "Hann Window";
             this.hannWindowToolStripMenuItem1.Click += new System.EventHandler(this.hannWindowToolStripMenuItem1_Click);
             // 
             // triangularWindowToolStripMenuItem1
             // 
             this.triangularWindowToolStripMenuItem1.Name = "triangularWindowToolStripMenuItem1";
-            this.triangularWindowToolStripMenuItem1.Size = new System.Drawing.Size(173, 22);
+            this.triangularWindowToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.triangularWindowToolStripMenuItem1.Text = "Triangular Window";
             this.triangularWindowToolStripMenuItem1.Click += new System.EventHandler(this.triangularWindowToolStripMenuItem1_Click);
             // 
             // allToolStripMenuItem
             // 
             this.allToolStripMenuItem.Name = "allToolStripMenuItem";
-            this.allToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.allToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.allToolStripMenuItem.Text = "All";
             this.allToolStripMenuItem.Click += new System.EventHandler(this.allToolStripMenuItem_Click);
             // 
@@ -214,7 +223,7 @@
             this.lowPassToolStripMenuItem,
             this.highPassToolStripMenuItem});
             this.generateFilterToolStripMenuItem.Name = "generateFilterToolStripMenuItem";
-            this.generateFilterToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.generateFilterToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.generateFilterToolStripMenuItem.Text = "Generate Filter";
             // 
             // lowPassToolStripMenuItem
@@ -266,12 +275,12 @@
             this.Record.UseVisualStyleBackColor = false;
             this.Record.Click += new System.EventHandler(this.Record_Click);
             // 
-            // fileDetailsToolStripMenuItem
+            // nonThreadedAllToolStripMenuItem
             // 
-            this.fileDetailsToolStripMenuItem.Name = "fileDetailsToolStripMenuItem";
-            this.fileDetailsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.fileDetailsToolStripMenuItem.Text = "File Details";
-            this.fileDetailsToolStripMenuItem.Click += new System.EventHandler(this.fileDetailsToolStripMenuItem_Click);
+            this.nonThreadedAllToolStripMenuItem.Name = "nonThreadedAllToolStripMenuItem";
+            this.nonThreadedAllToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.nonThreadedAllToolStripMenuItem.Text = "Non-Threaded All";
+            this.nonThreadedAllToolStripMenuItem.Click += new System.EventHandler(this.nonThreadedAllToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -322,6 +331,7 @@
         private System.Windows.Forms.ToolStripMenuItem allToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem plainDFTToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem fileDetailsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem nonThreadedAllToolStripMenuItem;
     }
 }
 

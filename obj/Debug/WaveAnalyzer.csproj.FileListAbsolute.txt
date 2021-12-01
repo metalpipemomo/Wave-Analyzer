@@ -72,3 +72,17 @@ C:\Users\banga\Source\Repos\Dennis_Project_Home\obj\Debug\WaveAnalyzer.FourierFo
 C:\Users\banga\Source\Repos\Dennis_Project_Home\obj\Debug\WaveAnalyzer.FreqCut.resources
 C:\Users\banga\Source\Repos\Dennis_Project_Home\obj\Debug\WaveAnalyzer.InfoForm.resources
 C:\Users\banga\Source\Repos\Dennis_Project_Home\obj\Debug\WaveAnalyzer.VerifyForm.resources
+C:\Users\banga\Source\Repos\Dennis_Project_Show\bin\Debug\WaveAnalyzer.exe.config
+C:\Users\banga\Source\Repos\Dennis_Project_Show\bin\Debug\WaveAnalyzer.exe
+C:\Users\banga\Source\Repos\Dennis_Project_Show\bin\Debug\WaveAnalyzer.pdb
+C:\Users\banga\Source\Repos\Dennis_Project_Show\obj\Debug\WaveAnalyzer.csproj.AssemblyReference.cache
+C:\Users\banga\Source\Repos\Dennis_Project_Show\obj\Debug\WaveAnalyzer.Form1.resources
+C:\Users\banga\Source\Repos\Dennis_Project_Show\obj\Debug\WaveAnalyzer.FourierForm.resources
+C:\Users\banga\Source\Repos\Dennis_Project_Show\obj\Debug\WaveAnalyzer.FreqCut.resources
+C:\Users\banga\Source\Repos\Dennis_Project_Show\obj\Debug\WaveAnalyzer.InfoForm.resources
+C:\Users\banga\Source\Repos\Dennis_Project_Show\obj\Debug\WaveAnalyzer.Properties.Resources.resources
+C:\Users\banga\Source\Repos\Dennis_Project_Show\obj\Debug\WaveAnalyzer.VerifyForm.resources
+C:\Users\banga\Source\Repos\Dennis_Project_Show\obj\Debug\WaveAnalyzer.csproj.GenerateResource.cache
+C:\Users\banga\Source\Repos\Dennis_Project_Show\obj\Debug\WaveAnalyzer.csproj.CoreCompileInputs.cache
+C:\Users\banga\Source\Repos\Dennis_Project_Show\obj\Debug\WaveAnalyzer.exe
+C:\Users\banga\Source\Repos\Dennis_Project_Show\obj\Debug\WaveAnalyzer.pdb

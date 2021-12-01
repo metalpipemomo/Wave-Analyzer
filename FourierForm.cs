@@ -12,6 +12,7 @@ namespace WaveAnalyzer
         private Complex[] changedWave;
         public bool binselected = false;
         public long timelapsed;
+        public int whichfourier;
         public FourierForm()
         {
             InitializeComponent();
@@ -64,7 +65,11 @@ namespace WaveAnalyzer
 
         public void doFourier(double[] samples)
         {
-            changedWave = Fourier.DFT(samples, samples.Length);
+            if (whichfourier == 1) {
+                changedWave = Fourier.DFT(samples, samples.Length);
+            } else {
+                changedWave = Fourier.DFTpt2(samples, samples.Length);
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)

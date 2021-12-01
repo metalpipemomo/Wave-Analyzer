@@ -169,7 +169,7 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                     MB_ICONEXCLAMATION | MB_OK);
             }
             // Set up headers and prepare them
-
+            
             pWaveHdr1->lpData = pBuffer1;
             pWaveHdr1->dwBufferLength = INP_BUFFER_SIZE;
             pWaveHdr1->dwBytesRecorded = 0;

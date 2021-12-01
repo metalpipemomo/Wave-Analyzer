@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace WaveAnalyzer
 {
@@ -45,59 +46,34 @@ namespace WaveAnalyzer
         //Forward Discrete Fourier Transform
         public static Complex[] DFT(double[] S, int N)
         {
-            Complex[] A = new Complex[N];
-            for (int f = 0; f < N; f++)
+            Complex[] part1 = new Complex[N];
+            Task t1 = Task.Factory.StartNew(() =>
             {
-                for (int t = 0; t < N; t++)
+                for (int f = 0; f < N; ++f)
                 {
-                    A[f].real += S[t] * Math.Cos(2 * Math.PI * t * f / N);
-                    A[f].imaginary -= S[t] * Math.Sin(2 * Math.PI * t * f / N);
-                }
-                A[f].real /= N;
-                A[f].imaginary /= N;
-            }
-            return A;
-            //Potentially good threading?
-            /*int pt1size = N / 2;
-            Complex[] part1 = new Complex[pt1size];
-            Complex[] part2 = new Complex[N];
-            Thread t1 = new Thread(() =>
-            {
-                for (int f = 0; f < pt1size; ++f)
-                {
-                    for (int t = 0; t < pt1size; ++t)
+                    for (int t = 0; t < N; ++t)
                     {
                         part1[f].real += S[t] * Math.Cos(2 * Math.PI * t * f / N);
-                        part1[f].imaginary -= S[t] * Math.Sin(2 * Math.PI * t * f / N);
                     }
                     part1[f].real /= N;
+                }
+            });
+            Task t2 = Task.Factory.StartNew(() =>
+            {
+                for (int f = 0; f < N; ++f)
+                {
+                    for (int t = 0; t < N; ++t)
+                    {
+                        part1[f].imaginary -= S[t] * Math.Sin(2 * Math.PI * t * f / N);
+                    }
                     part1[f].imaginary /= N;
                 }
             });
-            Thread t2 = new Thread(() =>
-            {
-                for (int f = pt1size; f < N; ++f)
-                {
-                    for (int t = pt1size; t < N; ++t)
-                    {
-                        part2[f].real += S[t] * Math.Cos(2 * Math.PI * t * f / N);
-                        part2[f].imaginary -= S[t] * Math.Sin(2 * Math.PI * t * f  / N);
-                    }
-                    part2[f].real /= N;
-                    part2[f].imaginary /= N;
-                }
-            });
-            t1.Start();
-            t2.Start();
-            t1.Join();
-            t2.Join();
-            Complex[] returnable = new Complex[part1.Length + part2.Length];
-            Array.Copy(part1, returnable, part1.Length);
-            Array.Copy(part2, 0, returnable, part1.Length, part2.Length);
-            return returnable;*/
+            Task.WaitAll(t1, t2);
+            return part1;
         }
 
-        public static void DFTpt2(double[] S, int N)
+        public static Complex[] DFTpt2(double[] S, int N)
         {
             Complex[] A = new Complex[N];
             for (int f = 0; f < N; f++)
@@ -110,6 +86,7 @@ namespace WaveAnalyzer
                 A[f].real /= N;
                 A[f].imaginary /= N;
             }
+            return A;
         }
 
         //Inverse Discrete Fourier Transform

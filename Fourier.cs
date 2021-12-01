@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 
 namespace WaveAnalyzer
 {
@@ -39,6 +40,8 @@ namespace WaveAnalyzer
     }
     public static class Fourier
     {
+
+        //Semaphore -> lock to total number of processes
         //Forward Discrete Fourier Transform
         public static Complex[] DFT(double[] S, int N)
         {
@@ -54,6 +57,59 @@ namespace WaveAnalyzer
                 A[f].imaginary /= N;
             }
             return A;
+            //Potentially good threading?
+            /*int pt1size = N / 2;
+            Complex[] part1 = new Complex[pt1size];
+            Complex[] part2 = new Complex[N];
+            Thread t1 = new Thread(() =>
+            {
+                for (int f = 0; f < pt1size; ++f)
+                {
+                    for (int t = 0; t < pt1size; ++t)
+                    {
+                        part1[f].real += S[t] * Math.Cos(2 * Math.PI * t * f / N);
+                        part1[f].imaginary -= S[t] * Math.Sin(2 * Math.PI * t * f / N);
+                    }
+                    part1[f].real /= N;
+                    part1[f].imaginary /= N;
+                }
+            });
+            Thread t2 = new Thread(() =>
+            {
+                for (int f = pt1size; f < N; ++f)
+                {
+                    for (int t = pt1size; t < N; ++t)
+                    {
+                        part2[f].real += S[t] * Math.Cos(2 * Math.PI * t * f / N);
+                        part2[f].imaginary -= S[t] * Math.Sin(2 * Math.PI * t * f  / N);
+                    }
+                    part2[f].real /= N;
+                    part2[f].imaginary /= N;
+                }
+            });
+            t1.Start();
+            t2.Start();
+            t1.Join();
+            t2.Join();
+            Complex[] returnable = new Complex[part1.Length + part2.Length];
+            Array.Copy(part1, returnable, part1.Length);
+            Array.Copy(part2, 0, returnable, part1.Length, part2.Length);
+            return returnable;*/
+        }
+
+        public static void DFTpt2(double[] S, int N)
+        {
+            Complex[] A = new Complex[N];
+            for (int f = 0; f < N; f++)
+            {
+                for (int t = 0; t < N; t++)
+                {
+                    A[f].real += S[t] * Math.Cos(2 * Math.PI * t * f / N);
+                    A[f].imaginary -= S[t] * Math.Sin(2 * Math.PI * t * f / N);
+                }
+                A[f].real /= N;
+                A[f].imaginary /= N;
+            }
         }
 
         //Inverse Discrete Fourier Transform

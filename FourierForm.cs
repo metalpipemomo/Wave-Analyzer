@@ -66,5 +66,11 @@ namespace WaveAnalyzer
         {
             changedWave = Fourier.DFT(samples, samples.Length);
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            VerifyForm f = new VerifyForm(changedWave);
+            f.Show();
+        }
     }
 }

@@ -448,6 +448,7 @@ namespace WaveAnalyzer
                 globalWavHdr.BitsPerSample = Constants.BITS_PER_SAMPLE;
                 globalWavHdr.SubChunk2ID = Constants.data;
                 globalWavHdr.SubChunk2Size = data.Length;
+                hScrollBar1.Maximum = globalFreq.Length - Constants.VIEWABLE;
                 StartPlay.Enabled = true;
                 StartPlay.Visible = true;
             }

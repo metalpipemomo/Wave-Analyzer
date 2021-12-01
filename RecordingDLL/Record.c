@@ -21,6 +21,7 @@ static DWORD sampleRate;
 static DWORD byteRate;
 static WORD blockAlign;
 static WORD bitsPerSample;
+static WORD nChannels;
 static HWND dialog;
 
 int WINAPI DllMain(HINSTANCE hInstance, DWORD fdwReason, PVOID pvReserved)
@@ -61,12 +62,13 @@ EXPORT VOID setDwLength(int newLength) {
     dwDataLength = newLength;
 }
 
-EXPORT VOID setBuffer(PBYTE currentBuffer, DWORD length, int bps, int ba, int sr, int br) {
+EXPORT VOID setBuffer(PBYTE currentBuffer, DWORD length, int bps, int ba, int sr, int br, int numch) {
     dwDataLength = length;
     bitsPerSample = bps;
     blockAlign = ba;
     sampleRate = sr;
     byteRate = br;
+    nChannels = numch;
     PBYTE s = realloc(pSaveBuffer, dwDataLength);
     memcpy(s, currentBuffer, dwDataLength);
     pSaveBuffer = s;
@@ -202,7 +204,7 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
             // Open waveform audio for output
 
             waveform.wFormatTag = WAVE_FORMAT_PCM;
-            waveform.nChannels = 1;
+            waveform.nChannels = nChannels;
             waveform.nSamplesPerSec = sampleRate;
             waveform.nAvgBytesPerSec = byteRate;
             waveform.nBlockAlign = blockAlign;

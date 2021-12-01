@@ -42,28 +42,32 @@
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.somethingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.hannWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.triangularWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.windowsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.plainDFTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.hannWindowToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.triangularWindowToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.allToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.generateFilterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lowPassToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.highPassToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.Record = new System.Windows.Forms.Button();
-            this.StartPlay = new System.Windows.Forms.Button();
             this.hScrollBar1 = new System.Windows.Forms.HScrollBar();
+            this.StartPlay = new System.Windows.Forms.Button();
+            this.Record = new System.Windows.Forms.Button();
+            this.fileDetailsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // chart1
             // 
-            this.chart1.BackColor = System.Drawing.Color.SlateGray;
-            this.chart1.BorderlineColor = System.Drawing.Color.SlateGray;
+            this.chart1.BackColor = System.Drawing.Color.Transparent;
+            this.chart1.BorderlineColor = System.Drawing.Color.Black;
             this.chart1.BorderlineWidth = 2;
             chartArea1.Name = "ChartArea1";
             this.chart1.ChartAreas.Add(chartArea1);
             legend1.Name = "Legend1";
             this.chart1.Legends.Add(legend1);
-            this.chart1.Location = new System.Drawing.Point(12, 68);
+            this.chart1.Location = new System.Drawing.Point(12, 87);
             this.chart1.Name = "chart1";
             this.chart1.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
             series1.ChartArea = "ChartArea1";
@@ -73,38 +77,44 @@
             series1.Name = "Original";
             series1.YValuesPerPoint = 10;
             this.chart1.Series.Add(series1);
-            this.chart1.Size = new System.Drawing.Size(900, 180);
+            this.chart1.Size = new System.Drawing.Size(910, 422);
             this.chart1.TabIndex = 1;
             this.chart1.Click += new System.EventHandler(this.chart1_Click);
             // 
             // Copy
             // 
-            this.Copy.Location = new System.Drawing.Point(409, 39);
+            this.Copy.BackColor = System.Drawing.Color.Transparent;
+            this.Copy.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Copy.Image = global::WaveAnalyzer.Properties.Resources.copy;
+            this.Copy.Location = new System.Drawing.Point(59, 39);
             this.Copy.Name = "Copy";
-            this.Copy.Size = new System.Drawing.Size(75, 23);
+            this.Copy.Size = new System.Drawing.Size(41, 42);
             this.Copy.TabIndex = 7;
-            this.Copy.Text = "Copy";
-            this.Copy.UseVisualStyleBackColor = true;
+            this.Copy.UseVisualStyleBackColor = false;
             this.Copy.Click += new System.EventHandler(this.Copy_Click);
             // 
             // Cut
             // 
-            this.Cut.Location = new System.Drawing.Point(328, 39);
+            this.Cut.BackColor = System.Drawing.Color.Transparent;
+            this.Cut.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Cut.Image = ((System.Drawing.Image)(resources.GetObject("Cut.Image")));
+            this.Cut.Location = new System.Drawing.Point(12, 39);
             this.Cut.Name = "Cut";
-            this.Cut.Size = new System.Drawing.Size(75, 23);
+            this.Cut.Size = new System.Drawing.Size(41, 42);
             this.Cut.TabIndex = 8;
-            this.Cut.Text = "Cut";
-            this.Cut.UseVisualStyleBackColor = true;
+            this.Cut.UseVisualStyleBackColor = false;
             this.Cut.Click += new System.EventHandler(this.Cut_Click);
             // 
             // Paste
             // 
-            this.Paste.Location = new System.Drawing.Point(491, 39);
+            this.Paste.BackColor = System.Drawing.Color.Transparent;
+            this.Paste.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Paste.Image = global::WaveAnalyzer.Properties.Resources.paste;
+            this.Paste.Location = new System.Drawing.Point(106, 39);
             this.Paste.Name = "Paste";
-            this.Paste.Size = new System.Drawing.Size(75, 23);
+            this.Paste.Size = new System.Drawing.Size(41, 42);
             this.Paste.TabIndex = 9;
-            this.Paste.Text = "Paste";
-            this.Paste.UseVisualStyleBackColor = true;
+            this.Paste.UseVisualStyleBackColor = false;
             this.Paste.Click += new System.EventHandler(this.Paste_Click);
             // 
             // menuStrip1
@@ -114,7 +124,7 @@
             this.somethingToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(922, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(934, 24);
             this.menuStrip1.TabIndex = 10;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -123,7 +133,8 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.importToolStripMenuItem,
             this.saveToolStripMenuItem,
-            this.clearToolStripMenuItem});
+            this.clearToolStripMenuItem,
+            this.fileDetailsToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -131,47 +142,71 @@
             // importToolStripMenuItem
             // 
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.importToolStripMenuItem.Text = "Import";
             this.importToolStripMenuItem.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // clearToolStripMenuItem
             // 
             this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-            this.clearToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.clearToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.clearToolStripMenuItem.Text = "Clear";
             this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
             // 
             // somethingToolStripMenuItem
             // 
             this.somethingToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.hannWindowToolStripMenuItem,
-            this.triangularWindowToolStripMenuItem,
+            this.windowsToolStripMenuItem,
             this.generateFilterToolStripMenuItem});
             this.somethingToolStripMenuItem.Name = "somethingToolStripMenuItem";
             this.somethingToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.somethingToolStripMenuItem.Text = "DFT";
             // 
-            // hannWindowToolStripMenuItem
+            // windowsToolStripMenuItem
             // 
-            this.hannWindowToolStripMenuItem.Name = "hannWindowToolStripMenuItem";
-            this.hannWindowToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
-            this.hannWindowToolStripMenuItem.Text = "Hann Window";
-            this.hannWindowToolStripMenuItem.Click += new System.EventHandler(this.hannWindowToolStripMenuItem_Click);
+            this.windowsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.plainDFTToolStripMenuItem,
+            this.hannWindowToolStripMenuItem1,
+            this.triangularWindowToolStripMenuItem1,
+            this.allToolStripMenuItem});
+            this.windowsToolStripMenuItem.Name = "windowsToolStripMenuItem";
+            this.windowsToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.windowsToolStripMenuItem.Text = "Windows";
             // 
-            // triangularWindowToolStripMenuItem
+            // plainDFTToolStripMenuItem
             // 
-            this.triangularWindowToolStripMenuItem.Name = "triangularWindowToolStripMenuItem";
-            this.triangularWindowToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
-            this.triangularWindowToolStripMenuItem.Text = "Triangular Window";
-            this.triangularWindowToolStripMenuItem.Click += new System.EventHandler(this.triangularWindowToolStripMenuItem_Click);
+            this.plainDFTToolStripMenuItem.Name = "plainDFTToolStripMenuItem";
+            this.plainDFTToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.plainDFTToolStripMenuItem.Text = "Plain DFT";
+            this.plainDFTToolStripMenuItem.Click += new System.EventHandler(this.plainDFTToolStripMenuItem_Click);
+            // 
+            // hannWindowToolStripMenuItem1
+            // 
+            this.hannWindowToolStripMenuItem1.Name = "hannWindowToolStripMenuItem1";
+            this.hannWindowToolStripMenuItem1.Size = new System.Drawing.Size(173, 22);
+            this.hannWindowToolStripMenuItem1.Text = "Hann Window";
+            this.hannWindowToolStripMenuItem1.Click += new System.EventHandler(this.hannWindowToolStripMenuItem1_Click);
+            // 
+            // triangularWindowToolStripMenuItem1
+            // 
+            this.triangularWindowToolStripMenuItem1.Name = "triangularWindowToolStripMenuItem1";
+            this.triangularWindowToolStripMenuItem1.Size = new System.Drawing.Size(173, 22);
+            this.triangularWindowToolStripMenuItem1.Text = "Triangular Window";
+            this.triangularWindowToolStripMenuItem1.Click += new System.EventHandler(this.triangularWindowToolStripMenuItem1_Click);
+            // 
+            // allToolStripMenuItem
+            // 
+            this.allToolStripMenuItem.Name = "allToolStripMenuItem";
+            this.allToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.allToolStripMenuItem.Text = "All";
+            this.allToolStripMenuItem.Click += new System.EventHandler(this.allToolStripMenuItem_Click);
             // 
             // generateFilterToolStripMenuItem
             // 
@@ -179,7 +214,7 @@
             this.lowPassToolStripMenuItem,
             this.highPassToolStripMenuItem});
             this.generateFilterToolStripMenuItem.Name = "generateFilterToolStripMenuItem";
-            this.generateFilterToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.generateFilterToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.generateFilterToolStripMenuItem.Text = "Generate Filter";
             // 
             // lowPassToolStripMenuItem
@@ -196,44 +231,54 @@
             this.highPassToolStripMenuItem.Text = "High-Pass";
             this.highPassToolStripMenuItem.Click += new System.EventHandler(this.highPassToolStripMenuItem_Click);
             // 
-            // Record
+            // hScrollBar1
             // 
-            this.Record.Location = new System.Drawing.Point(317, 352);
-            this.Record.Name = "Record";
-            this.Record.Size = new System.Drawing.Size(75, 23);
-            this.Record.TabIndex = 11;
-            this.Record.Text = "Record";
-            this.Record.UseVisualStyleBackColor = true;
-            this.Record.Click += new System.EventHandler(this.Record_Click);
+            this.hScrollBar1.LargeChange = 2;
+            this.hScrollBar1.Location = new System.Drawing.Point(0, 543);
+            this.hScrollBar1.Maximum = 1;
+            this.hScrollBar1.Name = "hScrollBar1";
+            this.hScrollBar1.Size = new System.Drawing.Size(935, 20);
+            this.hScrollBar1.TabIndex = 14;
+            this.hScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.hScrollBar1_Scroll);
             // 
             // StartPlay
             // 
+            this.StartPlay.BackColor = System.Drawing.Color.Transparent;
             this.StartPlay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.StartPlay.Image = ((System.Drawing.Image)(resources.GetObject("StartPlay.Image")));
-            this.StartPlay.Location = new System.Drawing.Point(525, 342);
+            this.StartPlay.Location = new System.Drawing.Point(881, 39);
             this.StartPlay.Name = "StartPlay";
             this.StartPlay.Size = new System.Drawing.Size(41, 42);
             this.StartPlay.TabIndex = 13;
             this.StartPlay.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.StartPlay.UseVisualStyleBackColor = true;
+            this.StartPlay.UseVisualStyleBackColor = false;
             this.StartPlay.Click += new System.EventHandler(this.StartPlay_Click);
             // 
-            // hScrollBar1
+            // Record
             // 
-            this.hScrollBar1.LargeChange = 2;
-            this.hScrollBar1.Location = new System.Drawing.Point(90, 251);
-            this.hScrollBar1.Maximum = 1;
-            this.hScrollBar1.Name = "hScrollBar1";
-            this.hScrollBar1.Size = new System.Drawing.Size(795, 18);
-            this.hScrollBar1.TabIndex = 14;
-            this.hScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.hScrollBar1_Scroll);
+            this.Record.BackColor = System.Drawing.Color.Transparent;
+            this.Record.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Record.Image = ((System.Drawing.Image)(resources.GetObject("Record.Image")));
+            this.Record.Location = new System.Drawing.Point(834, 39);
+            this.Record.Name = "Record";
+            this.Record.Size = new System.Drawing.Size(41, 42);
+            this.Record.TabIndex = 11;
+            this.Record.UseVisualStyleBackColor = false;
+            this.Record.Click += new System.EventHandler(this.Record_Click);
+            // 
+            // fileDetailsToolStripMenuItem
+            // 
+            this.fileDetailsToolStripMenuItem.Name = "fileDetailsToolStripMenuItem";
+            this.fileDetailsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.fileDetailsToolStripMenuItem.Text = "File Details";
+            this.fileDetailsToolStripMenuItem.Click += new System.EventHandler(this.fileDetailsToolStripMenuItem_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.SlateGray;
-            this.ClientSize = new System.Drawing.Size(922, 539);
+            this.ClientSize = new System.Drawing.Size(934, 561);
             this.Controls.Add(this.hScrollBar1);
             this.Controls.Add(this.StartPlay);
             this.Controls.Add(this.Record);
@@ -261,8 +306,6 @@
         private System.Windows.Forms.Button Paste;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem somethingToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem hannWindowToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem triangularWindowToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem generateFilterToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem lowPassToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem highPassToolStripMenuItem;
@@ -273,6 +316,12 @@
         private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem windowsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem hannWindowToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem triangularWindowToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem allToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem plainDFTToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fileDetailsToolStripMenuItem;
     }
 }
 

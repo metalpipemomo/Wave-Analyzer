@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -16,13 +17,15 @@ namespace WaveAnalyzer
     {
         [DllImport("RecordingDLL.dll")] public static extern int start();
         [DllImport("RecordingDLL.dll")] public static extern IntPtr getBuffer();
-        [DllImport("RecordingDLL.dll", CallingConvention = CallingConvention.Cdecl)] public static extern void setBuffer(byte* newpbuffer, int length, int bps, int blockalign, int samplerate, int byterate);
+        [DllImport("RecordingDLL.dll", CallingConvention = CallingConvention.Cdecl)] public static extern void setBuffer(byte* newpbuffer, int length, int bps, int blockalign, int samplerate, int byterate, int nchannels);
         [DllImport("RecordingDLL.dll")] public static extern int getDwLength();
         [DllImport("RecordingDLL.dll")] public static extern IntPtr StartMessage();
         [DllImport("RecordingDLL.dll")] public static extern IntPtr StopMessage();
         [DllImport("RecordingDLL.dll")] public static extern IntPtr PlayMessage();
         [DllImport("RecordingDLL.dll")] public static extern IntPtr PlayStopMessage();
+
         private string filePath;
+        private string fileName;
         private double[] globalFreq;
         private byte[] data;
         private double[] copy;
@@ -30,7 +33,8 @@ namespace WaveAnalyzer
         private double xend;
         public static int freqinput;
         private bool player = false;
-        private Color linecolor = Color.FromArgb(255, 105, 180);
+        private Color linecolor = Color.FromArgb(102, 255, 178);
+        private Color selectioncolor = Color.FromArgb(140, 102, 255);
         private WavReader globalWavHdr = new WavReader();
         public Form1()
         {
@@ -39,7 +43,18 @@ namespace WaveAnalyzer
             chartStyling();
             buttonStyling();
             Testing();
-            
+
+        }
+
+        protected override void OnPaintBackground(PaintEventArgs e)
+        {
+            using (LinearGradientBrush brush = new LinearGradientBrush(this.ClientRectangle,
+                                                                       Color.FromArgb(255, 128, 0),
+                                                                       Color.FromArgb(255, 51, 255),
+                                                                       0F))
+            {
+                e.Graphics.FillRectangle(brush, this.ClientRectangle);
+            }
         }
 
         private void chartStyling()
@@ -54,13 +69,15 @@ namespace WaveAnalyzer
             ca.CursorX.IsUserEnabled = true;
             ca.CursorX.IsUserSelectionEnabled = true;
             cs.Color = linecolor;
-            ca.CursorX.SelectionColor = linecolor;
-            ca.BackColor = Color.SlateGray;
-            ca.AxisX.ScrollBar.BackColor = Color.White;
+            ca.CursorX.SelectionColor = selectioncolor;
+            cs.BorderWidth = 3;
+            ca.BackColor = Color.Transparent;
             ca.AxisX.MajorGrid.Enabled = false;
+            ca.AxisX.LabelStyle.Enabled = false;
             ca.AxisY.MajorGrid.Enabled = false;
             this.chart1.MouseWheel += chart1_MouseWheel;
             hScrollBar1.Visible = false;
+            ca.AxisX.ScaleView.Size = Constants.VIEWABLE;
         }
 
         private void buttonStyling()
@@ -68,13 +85,18 @@ namespace WaveAnalyzer
             Cut.Enabled = false;
             Copy.Enabled = false;
             Paste.Enabled = false;
+            Cut.Visible = false;
+            Copy.Visible = false;
+            Paste.Visible = false;
             clearToolStripMenuItem.Enabled = false;
             saveToolStripMenuItem.Enabled = false;
-            hannWindowToolStripMenuItem.Enabled = false;
-            triangularWindowToolStripMenuItem.Enabled = false;
+            hannWindowToolStripMenuItem1.Enabled = false;
+            triangularWindowToolStripMenuItem1.Enabled = false;
             generateFilterToolStripMenuItem.Enabled = false;
             somethingToolStripMenuItem.Enabled = false;
+            fileDetailsToolStripMenuItem.Enabled = false;
             StartPlay.Enabled = false;
+            StartPlay.Visible = false;
         }
 
         public double[] readingWave(String fileName)
@@ -82,33 +104,97 @@ namespace WaveAnalyzer
             byte[] byteArray;
             BinaryReader reader = new BinaryReader(System.IO.File.OpenRead(fileName));
             globalWavHdr.Empty();
+            int tracker = 0;
             globalWavHdr.ChunkID = reader.ReadInt32();
+            tracker += 4;
             globalWavHdr.ChunkSize = reader.ReadInt32();
+            tracker += 4;
             globalWavHdr.Format = reader.ReadInt32();
+            tracker += 4;
             globalWavHdr.SubChunk1ID = reader.ReadInt32();
+            tracker += 4;
             globalWavHdr.SubChunk1Size = reader.ReadInt32();
+            tracker += 4;
             globalWavHdr.AudioFormat = reader.ReadUInt16();
+            tracker += 2;
             globalWavHdr.NumChannels = reader.ReadUInt16();
+            tracker += 2;
             globalWavHdr.SampleRate = reader.ReadUInt32();
+            tracker += 4;
             globalWavHdr.ByteRate = reader.ReadUInt32();
+            tracker += 4;
             globalWavHdr.BlockAlign = reader.ReadUInt16();
+            tracker += 2;
             globalWavHdr.BitsPerSample = reader.ReadUInt16();
+            tracker += 2;
             globalWavHdr.SubChunk2ID = reader.ReadInt32();
+            tracker += 4;
+            byte[] sum = BitConverter.GetBytes(globalWavHdr.SubChunk2ID);
+            //read all bytes into byte array and find word data, index of d is where data starts so seek back to that position and read
+            if (System.Text.Encoding.UTF8.GetString(sum) != "data")
+            {
+                string some = "";
+                for (int i = 0; i < 5; ++i)
+                {
+                    byte[] b = { reader.ReadByte() };
+                    some += System.Text.Encoding.UTF8.GetString(b);
+                    tracker++;
+                    switch (i)
+                    {
+                        case 1:
+                            if (some != "d")
+                            {
+                                i = 0;
+                                some = "";
+                            }
+                            break;
+                        case 2:
+                            if (some != "da")
+                            {
+                                i = 0;
+                                some = "";
+                            }
+                            break;
+                        case 3:
+                            if (some != "dat")
+                            {
+                                i = 0;
+                                some = "";
+                            }
+                            break;
+                        case 4:
+                            if (some != "data")
+                            {
+                                i = 0;
+                                some = "";
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    if (some == "data")
+                    {
+                        reader.BaseStream.Seek(tracker - 4, SeekOrigin.Begin);
+                        globalWavHdr.SubChunk2ID = reader.ReadInt32();
+                        break;
+                    }
+                }
+            }
             globalWavHdr.SubChunk2Size = reader.ReadInt32();
             byteArray = reader.ReadBytes((int)globalWavHdr.SubChunk2Size);
             data = byteArray;
             fixed (byte* ptr = byteArray)
             {
-                setBuffer(ptr, byteArray.Length, globalWavHdr.BitsPerSample, globalWavHdr.BlockAlign, (int)globalWavHdr.SampleRate, (int)globalWavHdr.ByteRate);
+                setBuffer(ptr, byteArray.Length, globalWavHdr.BitsPerSample, globalWavHdr.BlockAlign, (int)globalWavHdr.SampleRate, (int)globalWavHdr.ByteRate, globalWavHdr.NumChannels);
             }
             short[] shortArray = new short[globalWavHdr.SubChunk2Size / globalWavHdr.BlockAlign];
             double[] outputArray;
-            for (int i = 0; i < globalWavHdr.SubChunk2Size / globalWavHdr.BlockAlign; i++)
+            for (int i = 0; i < globalWavHdr.SubChunk2Size / globalWavHdr.BlockAlign - 1; i++)
             {
                 shortArray[i] = BitConverter.ToInt16(byteArray, i * globalWavHdr.BlockAlign);
             }
             outputArray = shortArray.Select(x => (double)(x)).ToArray();
-            hScrollBar1.Maximum = outputArray.Length - (outputArray.Length / 25);
+            hScrollBar1.Maximum = outputArray.Length - Constants.VIEWABLE;
             Trace.WriteLine(outputArray.Length);
             reader.Close();
             return outputArray;
@@ -123,70 +209,49 @@ namespace WaveAnalyzer
 
         public void plotFreqWaveChart(double[] array)
         {
-            chart1.Series["Original"].Points.Clear();
-            for (int i = 0; i < array.Length / 4; i++)
-            {
-                chart1.Series["Original"].Points.AddXY(i, array[i]);
-            }
-            for (int i = array.Length / 4; i < array.Length - array.Length / 2; i++)
-            {
-                chart1.Series["Original"].Points.AddXY(i, array[i]);
-            }
-            for (int i = array.Length / 2; i < array.Length - array.Length / 4; i++)
-            {
-                chart1.Series["Original"].Points.AddXY(i, array[i]);
-            }
-            for (int i = array.Length - array.Length / 4; i < array.Length; i++)
-            {
-                chart1.Series["Original"].Points.AddXY(i, array[i]);
-            }
-            /**
-             * store scroll start
-             * store scroll end (the size of your scaleview + start)
-             * set an index (?)
-             * from scroll start, while its less than scroll end and less than wave length, increment
-             * do:
-             * add xy index, and data at index
-             * increment index
-             */
-            /*int start = hScrollBar1.Value;
-            int end = (int) chart1.ChartAreas[0].AxisX.ScaleView.Size + start;
+            chart1.Series[0].Points.Clear();
+            int start = hScrollBar1.Value;
+            int end = (int)chart1.ChartAreas[0].AxisX.ScaleView.Size + start;
             int index = 0;
-            for (int i = start; i < end && i < globalFreq.Length; ++i)
+            for (int i = start; i < end && i < array.Length; ++i)
             {
-                chart1.Series[0].Points.AddXY(index, globalFreq[i]);
+                chart1.Series[0].Points.AddXY(index, array[i]);
                 ++index;
-            }*/
-            chart1.ChartAreas[0].AxisX.ScaleView.Size = array.Length / 25;
+            }
             clearToolStripMenuItem.Enabled = true;
             saveToolStripMenuItem.Enabled = true;
-            hannWindowToolStripMenuItem.Enabled = true;
-            triangularWindowToolStripMenuItem.Enabled = true;
+            hannWindowToolStripMenuItem1.Enabled = true;
+            triangularWindowToolStripMenuItem1.Enabled = true;
             generateFilterToolStripMenuItem.Enabled = true;
             somethingToolStripMenuItem.Enabled = true;
+            fileDetailsToolStripMenuItem.Enabled = true;
             hScrollBar1.Visible = true;
             StartPlay.Enabled = true;
+            StartPlay.Visible = true;
             Cut.Enabled = true;
             Copy.Enabled = true;
+            Cut.Visible = true;
+            Copy.Visible = true;
         }
 
         private void chart1_Click(object sender, EventArgs e)
         {
-            xstart = chart1.ChartAreas[0].CursorX.SelectionStart;
-            xend = chart1.ChartAreas[0].CursorX.SelectionEnd;
+            xstart = chart1.ChartAreas[0].CursorX.SelectionStart + hScrollBar1.Value;
+            xend = chart1.ChartAreas[0].CursorX.SelectionEnd + hScrollBar1.Value;
             Trace.WriteLine(xstart + "\n" + xend);
         }
 
         private void Copy_Click(object sender, EventArgs e)
         {
-            copy = new double[(int) xend - (int) xstart + 1];
+            copy = new double[(int)xend - (int)xstart + 1];
             int nums = 0;
-            for (int i = (int) xstart; i <= (int) xend; i++)
+            for (int i = (int)xstart; i <= (int)xend; i++)
             {
                 copy[nums] = globalFreq[i];
                 nums++;
             }
             Paste.Enabled = true;
+            Paste.Visible = true;
             Fourier.printSamplesTrace(copy);
         }
 
@@ -199,7 +264,7 @@ namespace WaveAnalyzer
             }
             for (int i = 0; i < copy.Length; i++)
             {
-                newfreq[i + (int) xstart] = copy[i];
+                newfreq[i + (int)xstart] = copy[i];
             }
             for (int i = (int)xstart + copy.Length; i < newfreq.Length; i++)
             {
@@ -207,6 +272,16 @@ namespace WaveAnalyzer
             }
             globalFreq = newfreq;
             plotFreqWaveChart(globalFreq);
+            byte[] newbuff = convertToByte(globalFreq);
+            globalWavHdr.ChunkSize = Constants.CHUNK_SIZE + newbuff.Length;
+            globalWavHdr.SubChunk2Size = newbuff.Length;
+            Array.Resize(ref data, newbuff.Length);
+            data = newbuff;
+            fixed (byte* ptr = data)
+            {
+                setBuffer(ptr, data.Length, globalWavHdr.BitsPerSample, globalWavHdr.BlockAlign, (int)globalWavHdr.SampleRate, (int)globalWavHdr.ByteRate, globalWavHdr.NumChannels);
+            }
+            hScrollBar1.Maximum = globalFreq.Length - Constants.VIEWABLE;
         }
 
         private void Cut_Click(object sender, EventArgs e)
@@ -216,45 +291,43 @@ namespace WaveAnalyzer
             list.RemoveRange((int)xstart, (int)xend - (int)xstart);
             globalFreq = list.ToArray();
             plotFreqWaveChart(globalFreq);
+            byte[] newbuff = convertToByte(globalFreq);
+            globalWavHdr.ChunkSize = Constants.CHUNK_SIZE + newbuff.Length;
+            globalWavHdr.SubChunk2Size = newbuff.Length;
+            Array.Resize(ref data, newbuff.Length);
+            data = newbuff;
+            fixed (byte* ptr = data)
+            {
+                setBuffer(ptr, data.Length, globalWavHdr.BitsPerSample, globalWavHdr.BlockAlign, (int)globalWavHdr.SampleRate, (int)globalWavHdr.ByteRate, globalWavHdr.NumChannels);
+            }
+            hScrollBar1.Maximum = globalFreq.Length - Constants.VIEWABLE;
         }
-
-        private class ZoomFrame
-        {
-            public double XStart { get; set; }
-            public double XFinish { get; set; }
-        }
-        private readonly Stack<ZoomFrame> _zoomFrames = new Stack<ZoomFrame>();
         private void chart1_MouseWheel(object sender, MouseEventArgs e)
         {
-            var chart = (Chart)sender;
-            var xAxis = chart.ChartAreas[0].AxisX;
-            xAxis.ScaleView.Zoomable = true;
-            if (e.Delta < 0)
+            int init = (int)chart1.ChartAreas[0].AxisX.ScaleView.Size;
+            double constant = e.Delta * 0.5;
+            if (chart1.ChartAreas[0].AxisX.ScaleView.Size - constant > 0
+                && chart1.ChartAreas[0].AxisX.ScaleView.Size - constant < globalFreq.Length
+                && chart1.ChartAreas[0].AxisX.ScaleView.Size - constant + hScrollBar1.Value < globalFreq.Length)
             {
-                if (0 < _zoomFrames.Count)
+                chart1.ChartAreas[0].AxisX.ScaleView.Size -= constant;
+                if (chart1.ChartAreas[0].AxisX.ScaleView.Size > init)
                 {
-                    var frame = _zoomFrames.Pop();
-                    if (_zoomFrames.Count == 0)
+                    for (int i = init; i < chart1.ChartAreas[0].AxisX.ScaleView.Size && i + hScrollBar1.Value < globalFreq.Length; ++i)
                     {
-                        xAxis.ScaleView.ZoomReset();
-                        xAxis.ScaleView.Size = globalFreq.Length / 25;
-                    } 
-                    else
-                    {
-                        xAxis.ScaleView.Zoom(frame.XStart, frame.XFinish);
+                        chart1.ChartAreas[0].AxisX.Maximum = i;
+                        chart1.Series[0].Points.AddXY(i, globalFreq[i + hScrollBar1.Value]);
                     }
                 }
+                else
+                {
+                    for (int i = init - 1; i >= chart1.ChartAreas[0].AxisX.ScaleView.Size; --i)
+                    {
+                        chart1.Series[0].Points.RemoveAt(i);
+                    }
+                }
+                hScrollBar1.Maximum = globalFreq.Length - (int)chart1.ChartAreas[0].AxisX.ScaleView.Size;
             }
-            else if (e.Delta > 0)
-            {
-                var xMin = xAxis.ScaleView.ViewMinimum;
-                var xMax = xAxis.ScaleView.ViewMaximum;
-                _zoomFrames.Push(new ZoomFrame { XStart = xMin, XFinish = xMax});
-                var posXStart = xAxis.PixelPositionToValue(e.Location.X) - (xMax - xMin) / 4;
-                var posXFinish = xAxis.PixelPositionToValue(e.Location.X) + (xMax - xMin) / 4;
-                xAxis.ScaleView.Zoom(posXStart, posXFinish);
-            }
-            xAxis.ScaleView.Zoomable = false;
         }
         public void Testing()
         {
@@ -278,39 +351,14 @@ namespace WaveAnalyzer
             Fourier.printSamplesTrace(Fourier.inverseDFT(Fourier.convertFilter(myfilter), myfilter.Length));
         }
 
-        private void hannWindowToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            double[] hann = Fourier.hannWindow(copy);
-            FourierForm f = new FourierForm();
-            Thread t = new Thread(() => f.doFourier(hann));
-            t.Start();
-            t.Join();
-            f.plotFourier(globalWavHdr.SampleRate, "Hann Window");
-            f.Show();
-        }
-
-        private void triangularWindowToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            double[] triangle = Fourier.triangleWindow(copy);
-            FourierForm f = new FourierForm();
-            Thread t = new Thread(() => f.doFourier(triangle));
-            t.Start();
-            t.Join();
-            f.plotFourier(globalWavHdr.SampleRate, "Triangle Window");
-            f.Show();
-        }
-
         private void lowPassToolStripMenuItem_Click(object sender, EventArgs e)
         {
             FreqCut f = new FreqCut();
-            double[] filter = new double[copy.Length];
+            double[] filter = new double[0];
             if (f.ShowDialog() == DialogResult.OK)
             {
                 filter = Fourier.lowPassFilter(copy.Length, freqinput, globalWavHdr.SampleRate);
                 Fourier.printSamplesTrace(filter);
-            } else
-            {
-                return;
             }
             Complex[] fw = Fourier.convertFilter(filter);
             double[] idftdfw = Fourier.inverseDFT(fw, fw.Length);
@@ -328,7 +376,7 @@ namespace WaveAnalyzer
             data = convertToByte(globalFreq);
             fixed (byte* ptr = data)
             {
-                setBuffer(ptr, data.Length, globalWavHdr.BitsPerSample, globalWavHdr.BlockAlign, (int)globalWavHdr.SampleRate, (int)globalWavHdr.ByteRate);
+                setBuffer(ptr, data.Length, globalWavHdr.BitsPerSample, globalWavHdr.BlockAlign, (int)globalWavHdr.SampleRate, (int)globalWavHdr.ByteRate, globalWavHdr.NumChannels);
             }
         }
 
@@ -357,7 +405,7 @@ namespace WaveAnalyzer
             data = convertToByte(globalFreq);
             fixed (byte* ptr = data)
             {
-                setBuffer(ptr, data.Length, globalWavHdr.BitsPerSample, globalWavHdr.BlockAlign, (int)globalWavHdr.SampleRate, (int)globalWavHdr.ByteRate);
+                setBuffer(ptr, data.Length, globalWavHdr.BitsPerSample, globalWavHdr.BlockAlign, (int)globalWavHdr.SampleRate, (int)globalWavHdr.ByteRate, globalWavHdr.NumChannels);
             }
         }
 
@@ -367,14 +415,16 @@ namespace WaveAnalyzer
             {
                 StartMessage();
                 player = true;
-            } else
+                Record.Image = Properties.Resources.stop;
+            }
+            else
             {
                 StopMessage();
                 player = false;
+                Record.Image = Properties.Resources.microphone;
                 data = new byte[getDwLength()];
                 Marshal.Copy(getBuffer(), data, 0, getDwLength());
                 short[] shortArray = new short[data.Length / 2];
-                double[] outputArray;
                 for (int i = 0; i < data.Length / 2; i++)
                 {
                     shortArray[i] = BitConverter.ToInt16(data, i * 2);
@@ -383,13 +433,23 @@ namespace WaveAnalyzer
                 plotFreqWaveChart(globalFreq);
                 fixed (byte* ptr = data)
                 {
-                    setBuffer(ptr, data.Length, 16, 2, 44100, 88200);
+                    setBuffer(ptr, data.Length, 16, 2, 44100, 88200, 1);
                 }
-                globalWavHdr.BlockAlign = 2;
-                globalWavHdr.BitsPerSample = 16;
-                globalWavHdr.SampleRate = 44100;
-                globalWavHdr.ByteRate = 88200;
+                globalWavHdr.ChunkID = Constants.RIFF;
+                globalWavHdr.ChunkSize = Constants.CHUNK_SIZE + data.Length;
+                globalWavHdr.Format = Constants.WAVE;
+                globalWavHdr.SubChunk1ID = Constants.fmt;
+                globalWavHdr.SubChunk1Size = Constants.SUBCHUNK_1SIZE;
+                globalWavHdr.AudioFormat = Constants.PCM;
+                globalWavHdr.NumChannels = Constants.CHANNELS;
+                globalWavHdr.SampleRate = Constants.SAMPLE_RATE;
+                globalWavHdr.ByteRate = Constants.BYTE_RATE;
+                globalWavHdr.BlockAlign = Constants.BLOCK_ALIGN;
+                globalWavHdr.BitsPerSample = Constants.BITS_PER_SAMPLE;
+                globalWavHdr.SubChunk2ID = Constants.data;
+                globalWavHdr.SubChunk2Size = data.Length;
                 StartPlay.Enabled = true;
+                StartPlay.Visible = true;
             }
         }
 
@@ -400,11 +460,14 @@ namespace WaveAnalyzer
                 PlayMessage();
                 player = true;
                 Trace.WriteLine("Existing");
-            } else
+                StartPlay.Image = Properties.Resources.pause;
+            }
+            else
             {
                 PlayStopMessage();
                 player = false;
                 Trace.WriteLine("Existn't");
+                StartPlay.Image = Properties.Resources.play;
             }
         }
 
@@ -430,43 +493,155 @@ namespace WaveAnalyzer
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 OpenFile(openFileDialog.FileName);
+                this.Text = openFileDialog.SafeFileName;
+                filePath = openFileDialog.SafeFileName;
             }
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Random rand = new Random();
-            FileStream fs = new FileStream("C:\\Users\\banga\\Downloads\\Written" + rand.Next() + ".wav", FileMode.CreateNew);
-            BinaryWriter writer = new BinaryWriter(fs);
-            writer.Write(globalWavHdr.ChunkID); //RIFF
-            writer.Write(globalWavHdr.ChunkSize); //File Size (integer)
-            writer.Write(globalWavHdr.Format); //WAVE
-            writer.Write(globalWavHdr.SubChunk1ID);//fmt
-            writer.Write(globalWavHdr.SubChunk1Size); //length of above data
-            writer.Write(globalWavHdr.AudioFormat); //PCM
-            writer.Write(globalWavHdr.NumChannels); //Channel numbers
-            writer.Write(globalWavHdr.SampleRate); //Sample rate
-            writer.Write(globalWavHdr.ByteRate); //Byte rate
-            writer.Write(globalWavHdr.BlockAlign);
-            writer.Write(globalWavHdr.BitsPerSample);
-            writer.Write(globalWavHdr.SubChunk2ID);
-            writer.Write(globalWavHdr.SubChunk2Size);
-            writer.Write(data);
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            //add filter
+            saveFileDialog.Filter = "WAV File (*.wav)|*.wav|All files (*.*)|*.*";
+            saveFileDialog.DefaultExt = "wav";
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                FileStream fs = (FileStream)saveFileDialog.OpenFile();
+                BinaryWriter writer = new BinaryWriter(fs);
+                writer.Write(globalWavHdr.ChunkID); //RIFF
+                writer.Write(globalWavHdr.ChunkSize); //File Size (integer)
+                writer.Write(globalWavHdr.Format); //WAVE
+                writer.Write(globalWavHdr.SubChunk1ID);//fmt
+                writer.Write(globalWavHdr.SubChunk1Size); //length of above data
+                writer.Write(globalWavHdr.AudioFormat); //PCM
+                writer.Write(globalWavHdr.NumChannels); //Channel numbers
+                writer.Write(globalWavHdr.SampleRate); //Sample rate
+                writer.Write(globalWavHdr.ByteRate); //Byte rate
+                writer.Write(globalWavHdr.BlockAlign);
+                writer.Write(globalWavHdr.BitsPerSample);
+                writer.Write(globalWavHdr.SubChunk2ID);
+                writer.Write(globalWavHdr.SubChunk2Size);
+                writer.Write(data);
+            }
         }
 
         private void clearToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            chart1.Series["Original"].Points.Clear();
+            chart1.Series[0].Points.Clear();
             buttonStyling();
         }
 
         private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
         {
             //if scaleview size + scrollvalue < wavelength
-            /*if (chart1.ChartAreas[0].AxisX.ScaleView.Size + hScrollBar1.Value < globalFreq.Length)
+            if (chart1.ChartAreas[0].AxisX.ScaleView.Size + hScrollBar1.Value < globalFreq.Length)
             {
                 plotFreqWaveChart(globalFreq);
-            }*/
+            }
+        }
+
+        private void plainDFTToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MakePlainDFT();
+        }
+
+        private void hannWindowToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            MakeHann();
+        }
+
+        private void triangularWindowToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            MakeTriangle();
+        }
+
+        private void allToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Stopwatch watch1 = new Stopwatch();
+            Stopwatch watch2 = new Stopwatch();
+            Stopwatch watch3 = new Stopwatch();
+            double[] hann = Fourier.hannWindow(copy);
+            FourierForm f = new FourierForm();
+            double[] triangle = Fourier.triangleWindow(copy);
+            FourierForm f1 = new FourierForm();
+            double[] samples = copy;
+            FourierForm f2 = new FourierForm();
+            Thread t = new Thread(() => f.doFourier(hann));
+            Thread t1 = new Thread(() => f1.doFourier(triangle));
+            Thread t2 = new Thread(() => f2.doFourier(samples));
+            watch1.Start();
+            t.Start();
+            watch2.Start();
+            t1.Start();
+            watch3.Start();
+            t2.Start();
+            t.Join();
+            watch1.Stop();
+            t1.Join();
+            watch2.Stop();
+            t2.Join();
+            watch3.Stop();
+            f.timelapsed = watch1.ElapsedMilliseconds;
+            f1.timelapsed = watch2.ElapsedMilliseconds;
+            f2.timelapsed = watch3.ElapsedMilliseconds;
+            f.plotFourier(globalWavHdr.SampleRate, "Hann Window");
+            f.Show();
+            f1.plotFourier(globalWavHdr.SampleRate, "Triangle Window");
+            f1.Show();
+            f2.plotFourier(globalWavHdr.SampleRate, "DFT");
+            f2.Show();
+        }
+
+        public void MakePlainDFT()
+        {
+            Stopwatch watch = new Stopwatch();
+            double[] samples = copy;
+            FourierForm f = new FourierForm();
+            Thread t = new Thread(() => f.doFourier(samples));
+            watch.Start();
+            t.Start();
+            t.Join();
+            watch.Stop();
+            f.timelapsed = watch.ElapsedMilliseconds;
+            f.plotFourier(globalWavHdr.SampleRate, "DFT");
+            f.Show();
+        }
+
+        public void MakeHann()
+        {
+            Stopwatch watch = new Stopwatch();
+            double[] hann = Fourier.hannWindow(copy);
+            FourierForm f = new FourierForm();
+            Thread t = new Thread(() => f.doFourier(hann));
+            watch.Start();
+            t.Start();
+            t.Join();
+            watch.Stop();
+            f.timelapsed = watch.ElapsedMilliseconds;
+            f.plotFourier(globalWavHdr.SampleRate, "Hann Window");
+            f.Show();
+        }
+
+        public void MakeTriangle()
+        {
+            Stopwatch watch = new Stopwatch();
+            double[] triangle = Fourier.triangleWindow(copy);
+            FourierForm f = new FourierForm();
+            Thread t = new Thread(() => f.doFourier(triangle));
+            watch.Start();
+            t.Start();
+            t.Join();
+            watch.Stop();
+            f.timelapsed = watch.ElapsedMilliseconds;
+            f.plotFourier(globalWavHdr.SampleRate, "Triangle Window");
+            f.Show();
+        }
+
+        private void fileDetailsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            InfoForm f = new InfoForm(filePath, globalWavHdr);
+            f.Show();
         }
     }
 }

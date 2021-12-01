@@ -55,7 +55,7 @@ namespace WaveAnalyzer
             }
             return A;
         }
-        //public static Complex[] FastForwardFourier(double[])
+
         //Inverse Discrete Fourier Transform
         public static double[] inverseDFT(Complex[] A, int N)
         {
@@ -265,6 +265,7 @@ namespace WaveAnalyzer
         {
             return radian * 180 / Math.PI;
         }
+
         //Get Phase Shifts
         public static double[] getShifts(Complex[] A)
         {

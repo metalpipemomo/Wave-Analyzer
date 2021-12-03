@@ -12,6 +12,12 @@ namespace WaveAnalyzer
 {
     public partial class InfoForm : Form
     {
+        /// <summary>
+        /// Constructor for Information Form.<br/>
+        /// Will store information on wave.
+        /// </summary>
+        /// <param name="windowname">Name of wav file.</param>
+        /// <param name="hdr">Header object that contains header information.</param>
         public InfoForm(string windowname, WavReader hdr)
         {
             InitializeComponent();

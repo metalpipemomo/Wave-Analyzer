@@ -86,3 +86,16 @@ C:\Users\banga\Source\Repos\Dennis_Project_Show\obj\Debug\WaveAnalyzer.csproj.Ge
 C:\Users\banga\Source\Repos\Dennis_Project_Show\obj\Debug\WaveAnalyzer.csproj.CoreCompileInputs.cache
 C:\Users\banga\Source\Repos\Dennis_Project_Show\obj\Debug\WaveAnalyzer.exe
 C:\Users\banga\Source\Repos\Dennis_Project_Show\obj\Debug\WaveAnalyzer.pdb
+C:\Users\banga\Source\Repos\Dennis_Project_Compression\bin\Debug\WaveAnalyzer.exe.config
+C:\Users\banga\Source\Repos\Dennis_Project_Compression\bin\Debug\WaveAnalyzer.exe
+C:\Users\banga\Source\Repos\Dennis_Project_Compression\bin\Debug\WaveAnalyzer.pdb
+C:\Users\banga\Source\Repos\Dennis_Project_Compression\obj\Debug\WaveAnalyzer.csproj.AssemblyReference.cache
+C:\Users\banga\Source\Repos\Dennis_Project_Compression\obj\Debug\WaveAnalyzer.FourierForm.resources
+C:\Users\banga\Source\Repos\Dennis_Project_Compression\obj\Debug\WaveAnalyzer.InfoForm.resources
+C:\Users\banga\Source\Repos\Dennis_Project_Compression\obj\Debug\WaveAnalyzer.Properties.Resources.resources
+C:\Users\banga\Source\Repos\Dennis_Project_Compression\obj\Debug\WaveAnalyzer.VerifyForm.resources
+C:\Users\banga\Source\Repos\Dennis_Project_Compression\obj\Debug\WaveAnalyzer.csproj.GenerateResource.cache
+C:\Users\banga\Source\Repos\Dennis_Project_Compression\obj\Debug\WaveAnalyzer.csproj.CoreCompileInputs.cache
+C:\Users\banga\Source\Repos\Dennis_Project_Compression\obj\Debug\WaveAnalyzer.exe
+C:\Users\banga\Source\Repos\Dennis_Project_Compression\obj\Debug\WaveAnalyzer.pdb
+C:\Users\banga\Source\Repos\Dennis_Project_Compression\obj\Debug\WaveAnalyzer.MainForm.resources

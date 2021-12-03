@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace WaveAnalyzer
 {
+    /// <summary>
+    /// Class used to store header information of wav file.
+    /// </summary>
     public class WavReader
     {
         public int ChunkID;

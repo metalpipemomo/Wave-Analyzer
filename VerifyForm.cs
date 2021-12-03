@@ -13,6 +13,10 @@ namespace WaveAnalyzer
 {
     public partial class VerifyForm : Form
     {
+        /// <summary>
+        /// VerifyForm constructor.
+        /// </summary>
+        /// <param name="c">Complex array.</param>
         public VerifyForm(Complex[] c)
         {
             InitializeComponent();
@@ -21,6 +25,10 @@ namespace WaveAnalyzer
             plotProof(c);
         }
 
+        /// <summary>
+        /// Overrides paint message. Using this to draw gradient.
+        /// </summary>
+        /// <param name="e">Paint message.</param>
         protected override void OnPaintBackground(PaintEventArgs e)
         {
             using (LinearGradientBrush brush = new LinearGradientBrush(this.ClientRectangle,
@@ -32,6 +40,10 @@ namespace WaveAnalyzer
             }
         }
 
+        /// <summary>
+        /// Plots the IDFT of a complex array.
+        /// </summary>
+        /// <param name="c">Complex array.</param>
         private void plotProof(Complex[] c)
         {
             double[] samples = Fourier.inverseDFT(c, c.Length);
@@ -41,6 +53,9 @@ namespace WaveAnalyzer
             }
         }
 
+        /// <summary>
+        /// Styling of verification chart.
+        /// </summary>
         private void chartStyling()
         {
             var ca = chart1.ChartAreas[0];

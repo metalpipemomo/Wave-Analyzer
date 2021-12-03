@@ -19,35 +19,15 @@ namespace WaveAnalyzer
             this.imaginary = imaginary;
         }
     }
-    //Structure used to generate samples
-    public struct CosWave
-    {
-        //Instance Variables
-        public double amplitude;
-        public double frequency;
-        public double phaseShift;
-        //Struct Constructor
-        public CosWave(double amplitude, double frequency, double phaseShift)
-        {
-            this.amplitude = amplitude;
-            this.frequency = frequency;
-            this.phaseShift = phaseShift;
-        }
-        //Calculate function
-        public double calculate(int t, int N)
-        {
-            return amplitude * Math.Cos(frequency * 2 * Math.PI * t / N * phaseShift);
-        }
-    }
+    
     public static class Fourier
     {
 
-        //Semaphore -> lock to total number of processes
         //Forward Discrete Fourier Transform
         public static Complex[] DFT(double[] S, int N)
         {
             Complex[] part1 = new Complex[N];
-            Task t1 = Task.Factory.StartNew(() =>
+            Thread t1 = new Thread(() =>
             {
                 for (int f = 0; f < N; ++f)
                 {
@@ -58,7 +38,7 @@ namespace WaveAnalyzer
                     part1[f].real /= N;
                 }
             });
-            Task t2 = Task.Factory.StartNew(() =>
+            Thread t2 = new Thread(() =>
             {
                 for (int f = 0; f < N; ++f)
                 {
@@ -69,11 +49,15 @@ namespace WaveAnalyzer
                     part1[f].imaginary /= N;
                 }
             });
-            Task.WaitAll(t1, t2);
+            t1.Start();
+            t2.Start();
+            t1.Join();
+            t2.Join();
             return part1;
         }
 
-        public static Complex[] DFTpt2(double[] S, int N)
+        //Non-Threaded DFT
+        public static Complex[] nonThreadedDFT(double[] S, int N)
         {
             Complex[] A = new Complex[N];
             for (int f = 0; f < N; f++)
@@ -103,9 +87,8 @@ namespace WaveAnalyzer
             }
             return S;
         }
-        //Filter frequencies out
         
-        //low-pass filter
+        //Low-pass filter
         public static double[] lowPassFilter(int N, double fcut, double samplerate)
         {
             double[] lowpass = new double[N];
@@ -122,7 +105,7 @@ namespace WaveAnalyzer
             return lowpass;
         }
 
-        //high-pass filter
+        //High-pass filter
         public static double[] highPassFilter(int N, double fcut, double samplerate)
         {
             double[] highpass = new double[N];
@@ -135,7 +118,7 @@ namespace WaveAnalyzer
             return highpass;
         }
 
-        //convert filter to complex arr
+        //Convert filter to complex array
         public static Complex[] convertFilter(double[] samples)
         {
             Complex[] arr = new Complex[samples.Length];
@@ -147,7 +130,7 @@ namespace WaveAnalyzer
             return arr;
         }
 
-        //convolution
+        //Convolution
         public static double[] convolve(double[] s, double[] fw)
         {
             double[] samples = new double[s.Length];
@@ -167,7 +150,7 @@ namespace WaveAnalyzer
             return samples;
         }
 
-        //huffman
+        //Shannon entropy
         public static double entropy(double[] samples)
         {
             double size = (double)samples.Length;
@@ -208,18 +191,7 @@ namespace WaveAnalyzer
             return uniquearr.ToArray();
         }
 
-        //
-        public static double[] triangleWindow(double[] samples)
-        {
-            int N = samples.Length;
-            double[] w = new double[N];
-            for (int n = 0; n < N; ++n)
-            {
-                w[n] = samples[n] * (1 - Math.Abs((n - (N / 2)) / ((N + 1) / 2)));
-            }
-            return w;
-        }
-
+        //Hann Windowing Technique
         public static double[] hannWindow(double[] samples)
         {
             int N = samples.Length;
@@ -231,14 +203,29 @@ namespace WaveAnalyzer
             return w;
         }
 
+        //Triangular Windowing Technique
+        public static double[] triangleWindow(double[] samples)
+        {
+            int N = samples.Length;
+            double[] w = new double[N];
+            for (int n = 0; n < N; ++n)
+            {
+                w[n] = samples[n] * (1 - Math.Abs((n - (N / 2)) / ((N + 1) / 2)));
+            }
+            return w;
+        }
+
+
         //Printing Samples
         public static void printSamples(double[] S)
         {
             for (int i = 0; i < S.Length; i++)
             {
-                Console.WriteLine(i + ". " + Math.Round(S[i], 5));
+                Console.WriteLine(i + ". " + S[i]);
             }
         }
+
+        //Printing Samples using Trace
         public static void printSamplesTrace(double[] S)
         {
             string s = "[ ";
@@ -280,19 +267,7 @@ namespace WaveAnalyzer
             }
             return freqs;
         }
-        //Generate Samples
-        public static double[] getSamples(CosWave[] wave, int N)
-        {
-            double[] S = new double[N];
-            for (int i = 0; i < N; i++)
-            {
-                for (int j = 0; j < wave.Length; j++)
-                {
-                    S[i] += wave[i].calculate(i, N);
-                }
-            }
-            return S;
-        }
+        
         //Convert Radians to Degrees
         public static double toDegrees(double radian)
         {
@@ -308,6 +283,36 @@ namespace WaveAnalyzer
                 phaseShifts[i] = toDegrees(Math.Atan2(A[i].imaginary, A[i].real));
             }
             return phaseShifts;
+        }
+
+        //Used to find half of DFT chart
+        public static double getLargestFreq(double[] freqs) {
+            double[] copy = new double[freqs.Length];
+            Array.Copy(freqs, copy, copy.Length);
+            Array.Sort(copy);
+            return copy[copy.Length - 1];
+        }
+
+        //Function for testing techniques learned in 3931
+        public static void Testing() {
+            double[] s = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
+            double[] fw = { 1, 0.2, 0.2, 0, 1, 0.1, 0.1, 1 };
+            double[] samples = Fourier.convolve(s, fw);
+            Trace.WriteLine("Convolution Test:");
+            Fourier.printSamplesTrace(samples);
+            Trace.WriteLine("Filter Test:");
+            double srate = 1000;
+            double fcut = 300;
+            int size = 16;
+            double[] myfilter = Fourier.lowPassFilter(size, fcut, srate);
+            Fourier.printSamplesTrace(myfilter);
+            myfilter = Fourier.highPassFilter(size, fcut, srate);
+            Fourier.printSamplesTrace(myfilter);
+            double[] shannonentropytest = { 5, 10, 15, 10, 8, 10, 15, 5, 8, 3, 8, 5, 8, 10, 10, 15, 10, 10, 8, 5, 5 };
+            Trace.WriteLine("Shannon Entropy Test:");
+            Trace.WriteLine(Fourier.entropy(shannonentropytest));
+            Fourier.printSamplesTrace(Fourier.uniquearr(shannonentropytest));
+            Fourier.printSamplesTrace(Fourier.inverseDFT(Fourier.convertFilter(myfilter), myfilter.Length));
         }
     }
 }
